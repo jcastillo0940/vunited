@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -12,6 +13,7 @@ import cartStorageService from '@/services/cartStorageService';
 import productService from '@/services/productService';
 
 export default function Store() {
+    const settings = useLayoutSettings();
     const [selectedFilter, setSelectedFilter] = useState('todos');
     const [cartItems, setCartItems] = useState(() => cartStorageService.loadCart());
     const [storeHero, setStoreHero] = useState(productsMock.hero);

@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -7,6 +8,7 @@ import standingService from '@/services/standingService';
 const OWN_CLUB_SLUGS = ['veraguas-united-fc', 'veraguas-united'];
 
 export default function Standings() {
+    const settings = useLayoutSettings();
     const [rows, setRows]             = useState([]);
     const [loading, setLoading]       = useState(true);
     const [competition, setCompetition] = useState('LPF');

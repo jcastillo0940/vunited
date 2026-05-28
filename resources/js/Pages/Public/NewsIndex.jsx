@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -8,6 +9,7 @@ import EmptyState from '@/components/common/EmptyState';
 import { fetchNews } from '@/services/newsService';
 
 export default function NewsIndex() {
+    const settings = useLayoutSettings();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);

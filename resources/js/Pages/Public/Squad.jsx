@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -17,6 +18,7 @@ const CATEGORY_LABELS = {
 };
 
 export default function Squad() {
+    const settings = useLayoutSettings();
     const [activeSquadId, setActiveSquadId]       = useState(playersMock.squadFilters[0].id);
     const [activePositionId, setActivePositionId] = useState(playersMock.positionFilters[0].id);
     const [squadData, setSquadData] = useState(buildMockSquadData());

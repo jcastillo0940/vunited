@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -6,6 +7,7 @@ import cartStorageService from '@/services/cartStorageService';
 import storeOrderService from '@/services/storeOrderService';
 
 export default function StoreOrderConfirmed() {
+    const settings = useLayoutSettings();
     const orderNumber = useMemo(
         () => new URLSearchParams(window.location.search).get('order'),
         [],

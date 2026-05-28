@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -7,6 +8,7 @@ import TryoutsInfoCards from '@/components/tryouts/TryoutsInfoCards';
 import tryoutsMock from '@/mocks/tryoutsMock';
 
 export default function Tryouts() {
+    const settings = useLayoutSettings();
     useEffect(() => {
         let active = true;
 

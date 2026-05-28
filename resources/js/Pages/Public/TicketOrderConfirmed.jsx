@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -5,6 +6,7 @@ import { publicPrimaryCta } from '@/config/publicNavigation';
 import ticketingService from '@/services/ticketingService';
 
 export default function TicketOrderConfirmed() {
+    const settings = useLayoutSettings();
     const orderNumber = useMemo(
         () => new URLSearchParams(window.location.search).get('order'),
         [],

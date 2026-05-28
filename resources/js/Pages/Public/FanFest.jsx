@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -26,6 +27,7 @@ const FALLBACK_EVENT = {
 };
 
 export default function FanFest() {
+    const settings = useLayoutSettings();
     const [event, setEvent]           = useState(FALLBACK_EVENT);
     const [loading, setLoading]       = useState(true);
     const [noEvent, setNoEvent]       = useState(false);

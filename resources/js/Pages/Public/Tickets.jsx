@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -11,6 +12,7 @@ import ticketsMock from '@/mocks/ticketsMock';
 import ticketingService from '@/services/ticketingService';
 
 export default function Tickets() {
+    const settings = useLayoutSettings();
     const [selectedZoneId, setSelectedZoneId] = useState(ticketsMock.zones[2].id);
     const [quantity, setQuantity] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);

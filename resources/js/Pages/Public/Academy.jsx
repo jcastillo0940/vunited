@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -10,6 +11,7 @@ import AcademyCTA from '@/components/academy/AcademyCTA';
 import academyMock from '@/mocks/academyMock';
 
 export default function Academy() {
+    const settings = useLayoutSettings();
     const [activeCategoryId, setActiveCategoryId] = useState(academyMock.categories[0].id);
 
     useEffect(() => {

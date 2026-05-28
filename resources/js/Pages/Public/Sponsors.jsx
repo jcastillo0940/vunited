@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -16,6 +17,7 @@ const TIER_CONFIG = {
 const TIER_ORDER = ['main_partner', 'official_sponsor', 'strategic_ally'];
 
 export default function Sponsors() {
+    const settings = useLayoutSettings();
     const [hero, setHero]             = useState(sponsorsMock.hero);
     const [valueProps, setValueProps] = useState(sponsorsMock.valueProps);
     const [leadForm, setLeadForm]     = useState(sponsorsMock.leadForm);

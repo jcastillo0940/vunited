@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -13,6 +14,7 @@ import stadiumMock from '@/mocks/stadiumMock';
 import stadiumService, { normalizeStadium } from '@/services/stadiumService';
 
 export default function Stadium() {
+    const settings = useLayoutSettings();
     const [stadium, setStadium]       = useState(stadiumMock);
 
     useEffect(() => {

@@ -1,3 +1,4 @@
+import homeMock from "@/mocks/homeMock";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';

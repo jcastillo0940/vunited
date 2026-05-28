@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -11,6 +12,7 @@ import cartStorageService from '@/services/cartStorageService';
 import storeOrderService from '@/services/storeOrderService';
 
 export default function Cart() {
+    const settings = useLayoutSettings();
     const [items, setItems] = useState(() => cartStorageService.loadCart());
     const [couponCode, setCouponCode] = useState('');
     const [appliedDiscount, setAppliedDiscount] = useState(0);

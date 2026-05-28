@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -10,6 +11,7 @@ import registrationConfirmationMock from '@/mocks/registrationConfirmationMock';
 import membershipService from '@/services/membershipService';
 
 export default function RegistrationConfirmed() {
+    const settings = useLayoutSettings();
     const [orderData, setOrderData] = useState(null);
     const [orderLoading, setOrderLoading] = useState(false);
 

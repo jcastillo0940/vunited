@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -8,6 +9,7 @@ import registerTribeMock from '@/mocks/registerTribeMock';
 import membershipService from '@/services/membershipService';
 
 export default function RegisterTribe() {
+    const settings = useLayoutSettings();
     const [activePlan, setActivePlan] = useState(null);
 
     useEffect(() => {

@@ -1,3 +1,4 @@
+import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -10,6 +11,7 @@ import boardMock from '@/mocks/boardMock';
 import boardService from '@/services/boardService';
 
 export default function Board() {
+    const settings = useLayoutSettings();
     const [hero, setHero]             = useState(boardMock.hero);
     const [transparency, setTransparency] = useState(boardMock.transparency);
     const [president, setPresident]   = useState(boardMock.president);
