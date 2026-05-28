@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@100..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-background font-body text-text-main antialiased;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
+    }
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@layer components {
+    .page-shell {
+        @apply mx-auto w-full max-w-shell px-margin-mobile md:px-margin-desktop;
+    }
+
+    .section-space {
+        @apply py-16 md:py-24;
+    }
+
+    .display-kicker {
+        @apply font-body text-[10px] font-bold uppercase tracking-athletic text-accent;
+    }
+
+    .section-heading {
+        @apply font-display text-3xl font-bold uppercase tracking-tight text-primary md:text-4xl;
+    }
+
+    .surface-card {
+        @apply rounded-lg border border-gray-200 bg-white shadow-card;
+    }
+
+    .surface-panel {
+        @apply rounded-xl border border-gray-200 bg-white shadow-panel;
+    }
+}
+
+@layer utilities {
+    .animate-scroll {
+        animation: scroll 40s linear infinite;
+    }
+}
