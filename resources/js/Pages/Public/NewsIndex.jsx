@@ -5,40 +5,9 @@ import NewsCard from '@/components/cards/NewsCard';
 import LoadingState from '@/components/common/LoadingState';
 import ErrorState from '@/components/common/ErrorState';
 import EmptyState from '@/components/common/EmptyState';
-import homeMock from '@/mocks/homeMock';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
 import { fetchNews } from '@/services/newsService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Noticias | Veraguas United FC',
-    global_seo_description: 'Ultimas noticias de Veraguas United FC.',
-    maintenance_mode: false,
-};
 
 export default function NewsIndex() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/noticias'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -50,9 +19,6 @@ export default function NewsIndex() {
             try {
                 setLoading(true);
                 const [siteSettings, header, footer, news] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                     fetchNews(),
                 ]);
 
@@ -60,9 +26,6 @@ export default function NewsIndex() {
                     return;
                 }
 
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
                 setArticles(normalizeNews(news));
                 setError(false);
             } catch {
@@ -70,9 +33,6 @@ export default function NewsIndex() {
                     return;
                 }
 
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
                 setArticles([]);
                 setError(true);
             } finally {
@@ -103,12 +63,6 @@ export default function NewsIndex() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel="UNETE A LA TRIBU"
                 navbarVariant="light"

@@ -1,16 +1,9 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
-import homeMock from '@/mocks/homeMock';
+import { publicPrimaryCta } from '@/config/publicNavigation';
+import { useLayoutSettings } from '@/context/LayoutContext';
 import expeditionService from '@/services/expeditionService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
 
 const FALLBACK_TRIPS = [
     {
@@ -29,26 +22,8 @@ const FALLBACK_TRIPS = [
     },
 ];
 
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    global_seo_title: 'Expedición India | Veraguas United FC',
-    global_seo_description: 'Viajes organizados para acompañar a los Indios.',
-    maintenance_mode: false,
-};
-
 export default function Expedition() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/expedicion-india'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings]     = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
+    const settings = useLayoutSettings();
     const [trips, setTrips]           = useState(FALLBACK_TRIPS);
     const [loading, setLoading]       = useState(true);
 
@@ -58,22 +33,14 @@ export default function Expedition() {
         async function load() {
             try {
                 const [siteSettings, header, footer, tripsRes] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                     expeditionService.getTrips(),
                 ]);
                 if (!active) return;
-
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/expedicion-india'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
 
                 const apiTrips = tripsRes.data?.data ?? [];
                 if (apiTrips.length) setTrips(apiTrips);
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
             } finally {
                 if (active) setLoading(false);
             }
@@ -92,12 +59,6 @@ export default function Expedition() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

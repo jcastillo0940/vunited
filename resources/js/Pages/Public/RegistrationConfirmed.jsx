@@ -1,46 +1,15 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { publicPrimaryCta } from '@/config/publicNavigation';
 import ConfirmationHero from '@/components/registration-confirmed/ConfirmationHero';
 import DigitalMemberCard from '@/components/registration-confirmed/DigitalMemberCard';
 import BenefitsSummary from '@/components/registration-confirmed/BenefitsSummary';
 import NextSteps from '@/components/registration-confirmed/NextSteps';
-import homeMock from '@/mocks/homeMock';
 import registrationConfirmationMock from '@/mocks/registrationConfirmationMock';
 import membershipService from '@/services/membershipService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Registro Confirmado | Veraguas United FC',
-    global_seo_description: 'Confirmación de registro La Tribu.',
-    maintenance_mode: false,
-};
 
 export default function RegistrationConfirmed() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/fanclub'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [orderData, setOrderData] = useState(null);
     const [orderLoading, setOrderLoading] = useState(false);
 
@@ -55,19 +24,10 @@ export default function RegistrationConfirmed() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
                 if (!active) return;
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -108,12 +68,6 @@ export default function RegistrationConfirmed() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

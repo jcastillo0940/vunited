@@ -1,48 +1,17 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { publicPrimaryCta } from '@/config/publicNavigation';
 import StoreHero from '@/components/store/StoreHero';
 import ProductFilters from '@/components/store/ProductFilters';
 import FeaturedProduct from '@/components/store/FeaturedProduct';
 import ProductGrid from '@/components/store/ProductGrid';
 import StoreCartPreview from '@/components/store/StoreCartPreview';
-import homeMock from '@/mocks/homeMock';
 import productsMock from '@/mocks/productsMock';
 import cartStorageService from '@/services/cartStorageService';
 import productService from '@/services/productService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Tienda Oficial | Veraguas United FC',
-    global_seo_description: 'Tienda oficial del Veraguas United FC. Camisetas, accesorios y más.',
-    maintenance_mode: false,
-};
 
 export default function Store() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/tienda'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [selectedFilter, setSelectedFilter] = useState('todos');
     const [cartItems, setCartItems] = useState(() => cartStorageService.loadCart());
     const [storeHero, setStoreHero] = useState(productsMock.hero);
@@ -62,26 +31,17 @@ export default function Store() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
 
                 if (!active) {
                     return;
                 }
 
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/tienda'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) {
                     return;
                 }
 
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -195,12 +155,6 @@ export default function Store() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

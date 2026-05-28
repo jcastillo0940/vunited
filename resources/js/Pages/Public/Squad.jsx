@@ -2,7 +2,6 @@ import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/common/EmptyState';
-import homeMock from '@/mocks/homeMock';
 import playersMock from '@/mocks/playersMock';
 import SquadHero from '@/components/squad/SquadHero';
 import SquadFilters from '@/components/squad/SquadFilters';
@@ -10,13 +9,6 @@ import SquadGrid from '@/components/squad/SquadGrid';
 import StaffGrid from '@/components/squad/StaffGrid';
 import playerService from '@/services/playerService';
 import staffService from '@/services/staffService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-} from '@/config/publicNavigation';
 
 const CATEGORY_LABELS = {
     'first-team':  'Primer Equipo (LPF)',
@@ -24,30 +16,7 @@ const CATEGORY_LABELS = {
     'academy':     'Cantera',
 };
 
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Plantilla | Veraguas United FC',
-    global_seo_description: 'Conoce la plantilla del club.',
-    maintenance_mode: false,
-};
-
 export default function Squad() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/plantilla'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings]         = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu]     = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu]     = useState(defaultFooterLinks);
     const [activeSquadId, setActiveSquadId]       = useState(playersMock.squadFilters[0].id);
     const [activePositionId, setActivePositionId] = useState(playersMock.positionFilters[0].id);
     const [squadData, setSquadData] = useState(buildMockSquadData());
@@ -59,21 +28,12 @@ export default function Squad() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
 
                 if (!active) return;
 
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -134,12 +94,6 @@ export default function Squad() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel="SOCIO INDIO"
                 navbarVariant="light"

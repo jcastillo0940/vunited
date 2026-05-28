@@ -1,46 +1,15 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { publicPrimaryCta } from '@/config/publicNavigation';
 import cartStorageService from '@/services/cartStorageService';
 import storeOrderService from '@/services/storeOrderService';
-import homeMock from '@/mocks/homeMock';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Orden de Tienda | Veraguas United FC',
-    global_seo_description: 'Estado de la orden de tienda del Veraguas United FC.',
-    maintenance_mode: false,
-};
 
 export default function StoreOrderConfirmed() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/tienda'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
     const orderNumber = useMemo(
         () => new URLSearchParams(window.location.search).get('order'),
         [],
     );
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [orderData, setOrderData] = useState(null);
     const [loading, setLoading] = useState(Boolean(orderNumber));
 
@@ -50,26 +19,17 @@ export default function StoreOrderConfirmed() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
 
                 if (!active) {
                     return;
                 }
 
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/tienda'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) {
                     return;
                 }
 
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -127,12 +87,6 @@ export default function StoreOrderConfirmed() {
         <>
             <Head title={settings.global_seo_title || 'Orden de Tienda | Veraguas United FC'} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

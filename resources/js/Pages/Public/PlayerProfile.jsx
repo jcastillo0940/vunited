@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import EmptyState from '@/components/common/EmptyState';
 import ErrorState from '@/components/common/ErrorState';
-import homeMock from '@/mocks/homeMock';
 import { getPlayerBySlug } from '@/mocks/playersMock';
 import PlayerHero from '@/components/player/PlayerHero';
 import PlayerStats from '@/components/player/PlayerStats';
@@ -11,38 +10,8 @@ import PlayerAttributeProfile from '@/components/player/PlayerAttributeProfile';
 import PlayerBioCard from '@/components/player/PlayerBioCard';
 import PlayerGallery from '@/components/player/PlayerGallery';
 import playerService from '@/services/playerService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Jugador | Veraguas United FC',
-    global_seo_description: 'Perfil público de jugador del club.',
-    maintenance_mode: false,
-};
 
 export default function PlayerProfile({ slug }) {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/plantilla'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [player, setPlayer] = useState(() => {
         const mock = getPlayerBySlug(slug);
         return mock ?? null;
@@ -55,19 +24,10 @@ export default function PlayerProfile({ slug }) {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
                 if (!active) return;
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -110,12 +70,6 @@ export default function PlayerProfile({ slug }) {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel="SOCIO INDIO"
                 navbarVariant="light"

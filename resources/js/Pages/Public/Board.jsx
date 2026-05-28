@@ -6,41 +6,10 @@ import PresidentBlock from '@/components/board/PresidentBlock';
 import ExecutiveStaffGrid from '@/components/board/ExecutiveStaffGrid';
 import BoardMembersGrid from '@/components/board/BoardMembersGrid';
 import TransparencyCTA from '@/components/board/TransparencyCTA';
-import homeMock from '@/mocks/homeMock';
 import boardMock from '@/mocks/boardMock';
 import boardService from '@/services/boardService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Directiva | Veraguas United FC',
-    global_seo_description: 'Liderazgo y visión institucional del club.',
-    maintenance_mode: false,
-};
 
 export default function Board() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/directiva'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings]     = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [hero, setHero]             = useState(boardMock.hero);
     const [transparency, setTransparency] = useState(boardMock.transparency);
     const [president, setPresident]   = useState(boardMock.president);
@@ -53,19 +22,10 @@ export default function Board() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
                 if (!active) return;
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/directiva'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -117,12 +77,6 @@ export default function Board() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel="UNETE A LA TRIBU"
                 navbarVariant="light"

@@ -1,16 +1,8 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
-import homeMock from '@/mocks/homeMock';
+import { publicPrimaryCta } from '@/config/publicNavigation';
 import fanFestService from '@/services/fanFestService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
 
 const FALLBACK_EVENT = {
     title:       'FanFest Veraguas United 2026',
@@ -33,30 +25,7 @@ const FALLBACK_EVENT = {
     ],
 };
 
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'FanFest | Veraguas United FC',
-    global_seo_description: 'La gran fiesta del fútbol veragüense.',
-    maintenance_mode: false,
-};
-
 export default function FanFest() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/fanfest'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings]     = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [event, setEvent]           = useState(FALLBACK_EVENT);
     const [loading, setLoading]       = useState(true);
     const [noEvent, setNoEvent]       = useState(false);
@@ -67,16 +36,9 @@ export default function FanFest() {
         async function load() {
             try {
                 const [siteSettings, header, footer, fanfestRes] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                     fanFestService.getEvent(),
                 ]);
                 if (!active) return;
-
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/fanfest'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
 
                 const apiEvent = fanfestRes.data?.data ?? null;
                 if (apiEvent && apiEvent.id) {
@@ -87,9 +49,6 @@ export default function FanFest() {
                 }
             } catch {
                 if (!active) return;
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             } finally {
                 if (active) setLoading(false);
             }
@@ -115,12 +74,6 @@ export default function FanFest() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

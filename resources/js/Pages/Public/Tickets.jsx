@@ -1,47 +1,16 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { publicPrimaryCta } from '@/config/publicNavigation';
 import TicketMatchHeader from '@/components/tickets/TicketMatchHeader';
 import TicketZoneSelector from '@/components/tickets/TicketZoneSelector';
 import TicketQuantitySelector from '@/components/tickets/TicketQuantitySelector';
 import TicketCheckoutSummary from '@/components/tickets/TicketCheckoutSummary';
 import TicketSuccessMock from '@/components/tickets/TicketSuccessMock';
-import homeMock from '@/mocks/homeMock';
 import ticketsMock from '@/mocks/ticketsMock';
 import ticketingService from '@/services/ticketingService';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Boletos | Veraguas United FC',
-    global_seo_description: 'Compra tus boletos para los partidos del Veraguas United FC.',
-    maintenance_mode: false,
-};
 
 export default function Tickets() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/boletos'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
     const [selectedZoneId, setSelectedZoneId] = useState(ticketsMock.zones[2].id);
     const [quantity, setQuantity] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -69,26 +38,17 @@ export default function Tickets() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
 
                 if (!active) {
                     return;
                 }
 
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/boletos'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
             } catch {
                 if (!active) {
                     return;
                 }
 
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -214,12 +174,6 @@ export default function Tickets() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}

@@ -1,47 +1,18 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { publicPrimaryCta } from '@/config/publicNavigation';
+import { useLayoutSettings } from '@/context/LayoutContext';
 import CalendarHero from '@/components/calendar/CalendarHero';
 import NextMatchCard from '@/components/calendar/NextMatchCard';
 import MatchFilters from '@/components/calendar/MatchFilters';
 import MatchList from '@/components/calendar/MatchList';
 import SeasonSummary from '@/components/calendar/SeasonSummary';
 import calendarMock from '@/mocks/calendarMock';
-import homeMock from '@/mocks/homeMock';
-import { fetchSiteSettings } from '@/services/siteService';
-import { fetchMenu } from '@/services/menuService';
 import matchService, { normalizeMatchForCalendar } from '@/services/matchService';
-import {
-    buildPublicFooterLinks,
-    buildPublicHeaderLinks,
-    publicLegalLinks,
-    publicPrimaryCta,
-} from '@/config/publicNavigation';
-
-const fallbackSettings = {
-    site_name: 'Veraguas United FC',
-    site_tagline: 'Orgullo de Veraguas',
-    primary_logo_url: null,
-    secondary_logo_url: null,
-    primary_color: '#1D428A',
-    accent_color: '#5BC2E7',
-    contact_email: 'hola@veraguasunited.test',
-    contact_phone: '+507 6000-0000',
-    social_links: {
-        instagram: 'https://instagram.com/veraguasunited',
-        facebook: 'https://facebook.com/veraguasunited',
-    },
-    global_seo_title: 'Calendario | Veraguas United FC',
-    global_seo_description: 'Calendario de partidos del Veraguas United FC. Próximos encuentros y resultados.',
-    maintenance_mode: false,
-};
 
 export default function Calendar() {
-    const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks('/calendario'), []);
-    const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
-    const [settings, setSettings] = useState(fallbackSettings);
-    const [headerMenu, setHeaderMenu] = useState(defaultHeaderLinks);
-    const [footerMenu, setFooterMenu] = useState(defaultFooterLinks);
+    const settings = useLayoutSettings();
     const [selectedFilter, setSelectedFilter] = useState('Todos');
     const [matches, setMatches] = useState(calendarMock.matches);
     const [nextMatch, setNextMatch] = useState(calendarMock.nextMatch);
@@ -53,18 +24,11 @@ export default function Calendar() {
         async function loadShell() {
             try {
                 const [siteSettings, header, footer] = await Promise.all([
-                    fetchSiteSettings(),
-                    fetchMenu('header'),
-                    fetchMenu('footer'),
                 ]);
 
                 if (!active) {
                     return;
                 }
-
-                setSettings(siteSettings ?? fallbackSettings);
-                setHeaderMenu(toMenuLinks(header?.items ?? [], defaultHeaderLinks, '/calendario'));
-                setFooterMenu(toMenuLinks(footer?.items ?? [], defaultFooterLinks));
 
                 const matchesRes = await matchService.getMatches().catch(() => null);
                 const allMatches = matchesRes?.data?.data ?? [];
@@ -79,9 +43,6 @@ export default function Calendar() {
                     return;
                 }
 
-                setSettings(fallbackSettings);
-                setHeaderMenu(defaultHeaderLinks);
-                setFooterMenu(defaultFooterLinks);
             }
         }
 
@@ -116,12 +77,6 @@ export default function Calendar() {
         <>
             <Head title={pageTitle} />
             <AppLayout
-                settings={settings}
-                headerMenu={headerMenu}
-                footerMenu={footerMenu}
-                legalMenu={publicLegalLinks}
-                ticker={homeMock.ticker}
-                tickerClubLabel="VERAGUAS UNITED FC"
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel={publicPrimaryCta.label}
                 navbarCtaHref={publicPrimaryCta.url}
