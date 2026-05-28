@@ -197,7 +197,7 @@ export default function FanClub() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <FanClubHero hero={planView.hero} />
+                <FanClubHero hero={planView.hero} videoUrl={settings.hero_video_url ?? null} />
                 <MembershipPlanCard annualPass={planView.annualPass} salesCopy={planView.salesCopy} />
                 <WelcomeKit items={planView.welcomeKit} />
                 <MembershipBenefits benefits={planView.benefits} />
