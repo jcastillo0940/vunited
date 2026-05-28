@@ -1,10 +1,57 @@
-export default function CalendarHero({ hero }) {
+function extractYouTubeId(url) {
+    if (!url) return null;
+    const patterns = [
+        /[?&]v=([^&#]+)/,
+        /youtu\.be\/([^?#]+)/,
+        /youtube\.com\/embed\/([^?#]+)/,
+        /youtube\.com\/shorts\/([^?#]+)/,
+    ];
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    return null;
+}
+
+export default function CalendarHero({ hero, videoUrl }) {
+    const videoId = extractYouTubeId(videoUrl);
+
+    const backgroundStyle = !videoId && hero?.imageUrl
+        ? { backgroundImage: `linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72)), url(${hero.imageUrl})` }
+        : undefined;
+
     return (
-        <section className="relative flex min-h-[56vh] items-end overflow-hidden bg-primary pt-28">
-            <div className="absolute inset-0">
-                <img src={hero.imageUrl} alt={hero.title} className="h-full w-full object-cover opacity-35" />
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72))]" />
-            </div>
+        <section
+            className="relative flex min-h-[56vh] items-end overflow-hidden bg-primary pt-28"
+            style={backgroundStyle}
+        >
+            {videoId && (
+                <>
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&rel=0&showinfo=0&playlist=${videoId}&playsinline=1&modestbranding=1&disablekb=1&iv_load_policy=3&fs=0`}
+                            title="Hero video"
+                            allow="autoplay; loop"
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '177.78vh',
+                                minWidth: '100%',
+                                height: '56.25vw',
+                                minHeight: '100%',
+                                border: 'none',
+                                pointerEvents: 'none',
+                            }}
+                        />
+                    </div>
+                    <div
+                        className="absolute inset-0 z-[1]"
+                        style={{ background: 'linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72))' }}
+                    />
+                </>
+            )}
 
             <div className="page-shell relative z-10 mx-auto w-full max-w-7xl px-margin-mobile pb-16 md:px-margin-desktop md:pb-20">
                 <div className="max-w-3xl">

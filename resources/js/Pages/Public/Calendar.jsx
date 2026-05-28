@@ -130,7 +130,7 @@ export default function Calendar() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <CalendarHero hero={calendarMock.hero} />
+                <CalendarHero hero={calendarMock.hero} videoUrl={settings.hero_video_url ?? null} />
                 <NextMatchCard match={nextMatch} />
 
                 <section className="pb-24 pt-16">
