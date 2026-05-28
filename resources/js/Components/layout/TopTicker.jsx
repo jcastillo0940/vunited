@@ -23,9 +23,13 @@ export default function TopTicker({
                         {clubLabel}
                     </span>
                     {hasMatch ? (
-                        <div className="hidden items-center gap-2 rounded-sm bg-accent px-3 py-0.5 md:flex">
-                            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
-                            <span className="text-[10px] font-bold uppercase text-primary">
+                        <div className="relative hidden overflow-hidden items-center gap-2 rounded-sm bg-accent px-3 py-0.5 md:flex">
+                            {/* shimmer sweep */}
+                            <div className="pointer-events-none absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                            <span className="relative h-2 w-2 rounded-full bg-red-500">
+                                <span className="absolute inset-0 animate-ping rounded-full bg-red-500 opacity-75" />
+                            </span>
+                            <span className="relative text-[10px] font-bold uppercase text-primary">
                                 {tickerLabel}: {tickerText}
                             </span>
                         </div>

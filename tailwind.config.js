@@ -54,6 +54,15 @@ export default {
             letterSpacing: {
                 athletic: '0.24em',
             },
+            keyframes: {
+                shimmer: {
+                    '0%':   { transform: 'translateX(-150%) skewX(-12deg)' },
+                    '100%': { transform: 'translateX(350%) skewX(-12deg)' },
+                },
+            },
+            animation: {
+                shimmer: 'shimmer 2.8s ease-in-out infinite',
+            },
         },
     },
 
