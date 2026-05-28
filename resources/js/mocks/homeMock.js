@@ -8,8 +8,8 @@ const homeMock = {
         highlight: 'SOMOS VERAGUAS',
         description:
             'Unete a la pasion en el Estadio Atalaya. Defendamos juntos nuestra tierra en el Clausura 2024.',
-        primaryAction: { label: 'COMPRAR BOLETOS', href: null },
-        secondaryAction: { label: 'HAZTE MIEMBRO', href: null },
+        primaryAction: { label: 'COMPRAR BOLETOS', href: '/boletos' },
+        secondaryAction: { label: 'HAZTE MIEMBRO', href: '/fanclub' },
         imageUrl:
             'https://lh3.googleusercontent.com/aida-public/AB6AXuCxnv_8t9jrNX0YTvVkpfb3_dCsPoOBdjm2bDLVd8-_iqdCuY6ZZ6l4yj0Ll50xY_FGpmA9mt24_pNY71nZjwCa1-a_yB2GnUGX7VRp4Y3AqmKuCayuNnYSExt7rX-alrx0IAp9ZQY_SQjGPt8Qy-3PVH7J3aNh02bf0X-PoVloPyZ6n8STAfd2-JWLhvzPfCSsiHyKruYTXbWVYMu8iSDw2X_TjKYE-U1LIwkHz4BrsxGxUbyx53IrUpW9fJLST_8mPSjkXzxBCoor',
     },
