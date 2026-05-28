@@ -67,13 +67,19 @@ export default function MatchCard({ match }) {
             </div>
 
             <div className="border-t border-slate-100 px-6 py-5">
-                <CTAButton
-                    href={match.ctaHref}
-                    variant={match.status === 'proximo' ? 'primary' : 'outline'}
-                    className="w-full justify-center"
-                >
-                    {match.ctaLabel}
-                </CTAButton>
+                {match.status === 'finalizado' ? (
+                    <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                        Partido finalizado
+                    </p>
+                ) : (
+                    <CTAButton
+                        href={match.ctaHref}
+                        variant={match.status === 'proximo' ? 'primary' : 'outline'}
+                        className="w-full justify-center"
+                    >
+                        {match.ctaLabel}
+                    </CTAButton>
+                )}
             </div>
         </article>
     );
