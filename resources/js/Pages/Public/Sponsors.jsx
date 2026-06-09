@@ -1,7 +1,7 @@
-import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import SponsorsHero from '@/components/sponsors/SponsorsHero';
 import SponsorTierSection from '@/components/sponsors/SponsorTierSection';
 import SponsorValueSection from '@/components/sponsors/SponsorValueSection';
 import SponsorLeadForm from '@/components/sponsors/SponsorLeadForm';
@@ -17,7 +17,6 @@ const TIER_CONFIG = {
 const TIER_ORDER = ['main_partner', 'official_sponsor', 'strategic_ally'];
 
 export default function Sponsors() {
-    const settings = useLayoutSettings();
     const [hero, setHero]             = useState(sponsorsMock.hero);
     const [valueProps, setValueProps] = useState(sponsorsMock.valueProps);
     const [leadForm, setLeadForm]     = useState(sponsorsMock.leadForm);
@@ -57,10 +56,7 @@ export default function Sponsors() {
         return () => { active = false; };
     }, []);
 
-    const pageTitle = useMemo(
-        () => settings.global_seo_title || 'Patrocinadores | Veraguas United FC',
-        [settings.global_seo_title],
-    );
+    const pageTitle = 'Patrocinadores | Veraguas United FC';
 
     return (
         <>
@@ -71,7 +67,7 @@ export default function Sponsors() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <HeroSponsorsSection hero={hero} />
+                <SponsorsHero hero={hero} />
 
                 <section className="section-space bg-white">
                     <div className="page-shell max-w-7xl space-y-20">
@@ -130,34 +126,6 @@ function buildTiers(apiSponsors) {
         }));
 }
 
-function HeroSponsorsSection({ hero }) {
-    return (
-        <section className="relative overflow-hidden bg-primary pb-20 pt-40 md:pb-24 md:pt-48">
-            <img
-                src={hero.imageUrl}
-                alt={hero.title}
-                className="absolute inset-0 h-full w-full object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(29,66,138,0.94)_0%,rgba(29,66,138,0.86)_52%,rgba(29,66,138,0.75)_100%)]" />
-
-            <div className="page-shell relative z-10 max-w-7xl">
-                <div className="max-w-4xl space-y-8">
-                    <span className="inline-flex rounded-sm bg-accent px-4 py-2 text-xs font-bold uppercase tracking-[0.3em] text-white">
-                        {hero.badge}
-                    </span>
-                    <h1 className="font-display text-5xl font-bold uppercase leading-[0.9] tracking-tight text-white md:text-7xl lg:text-[5.5rem]">
-                        {hero.title}
-                    </h1>
-                    <div className="max-w-2xl border-l-2 border-accent/80 pl-6">
-                        <p className="text-base leading-8 text-white/85 md:text-lg">
-                            {hero.description}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-}
 
 function toMenuLinks(items = [], fallback = []) {
     if (!items.length) return fallback;

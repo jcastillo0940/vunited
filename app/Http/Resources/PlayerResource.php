@@ -30,9 +30,15 @@ class PlayerResource extends JsonResource
             'gallery'       => $this->gallery ?? [],
             'stats'         => $this->stats ?? [],
             'attributes'    => $this->attributes ?? [],
-            'biography'     => $this->biography,
-            'is_active'     => $this->is_active,
-            'sort_order'    => $this->sort_order,
+            'biography'          => $this->biography,
+            'is_active'          => $this->is_active,
+            'is_exported'        => $this->is_exported,
+            'foreign_club'       => $this->foreign_club,
+            'foreign_league'     => $this->foreign_league,
+            'foreign_country'    => $this->foreign_country,
+            'foreign_club_logo'  => $this->foreign_club_logo,
+            'achievements'       => $this->achievements ?? [],
+            'sort_order'         => $this->sort_order,
         ];
     }
 }

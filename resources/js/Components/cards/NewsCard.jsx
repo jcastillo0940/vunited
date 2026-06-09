@@ -1,57 +1,72 @@
 export default function NewsCard({ article, variant = 'compact' }) {
     if (variant === 'featured') {
         return (
-            <article className="group flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md md:col-span-2 md:flex-row">
-                <div className="overflow-hidden md:w-3/5">
+            <a
+                href={article.href}
+                className="group relative block w-full overflow-hidden rounded-xl shadow-lg"
+            >
+                {/* imagen siempre recortada al mismo tamaño */}
+                <div className="aspect-[21/9] w-full">
                     <img
                         src={article.imageUrl}
                         alt={article.title}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                 </div>
-                <div className="flex flex-1 flex-col justify-between p-10">
-                    <div>
-                        <span className="mb-6 inline-block rounded-full bg-surface px-3 py-1 text-[10px] font-bold uppercase text-primary">
-                            {article.categoryLabel}
-                        </span>
-                        <h3 className="font-display text-3xl font-bold uppercase leading-tight text-primary transition-colors group-hover:text-accent">
-                            {article.title}
-                        </h3>
-                        <p className="mt-6 font-body leading-relaxed text-gray-600">
+
+                {/* overlay degradado */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent" />
+
+                {/* contenido sobre la imagen */}
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+                    <span className="mb-3 inline-block rounded-full bg-accent px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                        {article.categoryLabel}
+                    </span>
+                    <h2 className="font-display text-2xl font-bold uppercase leading-tight text-white md:text-4xl">
+                        {article.title}
+                    </h2>
+                    {article.summary ? (
+                        <p className="mt-3 hidden max-w-2xl text-sm leading-relaxed text-white/80 md:block">
                             {article.summary}
                         </p>
-                    </div>
-                    <a
-                        href={article.href}
-                        className="pt-6 text-sm font-bold uppercase tracking-wider text-accent transition-colors hover:text-primary"
-                    >
-                        Leer articulo completo
-                    </a>
+                    ) : null}
+                    <span className="mt-4 inline-block text-xs font-bold uppercase tracking-wider text-accent">
+                        Leer artículo completo →
+                    </span>
                 </div>
-            </article>
+            </a>
         );
     }
 
     return (
-        <article className="group overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-            <div className="aspect-video overflow-hidden">
+        <a
+            href={article.href}
+            className="group flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md transition-shadow hover:shadow-xl"
+        >
+            {/* imagen siempre en la misma proporción */}
+            <div className="aspect-[4/3] w-full overflow-hidden">
                 <img
                     src={article.imageUrl}
                     alt={article.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
             </div>
-            <div className="p-8">
-                <span className="block text-[10px] font-bold uppercase text-accent">
+            <div className="flex flex-1 flex-col p-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                     {article.categoryLabel}
                 </span>
-                <h3 className="mt-3 font-display text-xl font-bold uppercase text-primary transition-colors group-hover:text-accent">
+                <h3 className="mt-2 font-display text-lg font-bold uppercase leading-tight text-primary transition-colors group-hover:text-accent">
                     {article.title}
                 </h3>
-                <p className="mt-4 text-sm leading-relaxed text-gray-600">
-                    {article.summary}
-                </p>
+                {article.summary ? (
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
+                        {article.summary}
+                    </p>
+                ) : null}
+                <span className="mt-4 text-xs font-bold uppercase tracking-wider text-accent">
+                    Leer más →
+                </span>
             </div>
-        </article>
+        </a>
     );
 }

@@ -4,7 +4,7 @@ export default function MembershipBanner({ membership }) {
     return (
         <section className="group relative overflow-hidden rounded-lg bg-primary p-10 shadow-xl">
             <div className="relative z-10">
-                <h3 className="mb-4 font-display text-3xl font-bold uppercase leading-tight text-white">
+                <h3 className="mb-4 font-display text-2xl font-bold uppercase tracking-tight text-white">
                     {membership.title}
                 </h3>
                 <p className="mb-10 text-sm leading-relaxed text-white/80">

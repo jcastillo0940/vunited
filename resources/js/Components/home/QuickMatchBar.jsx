@@ -4,7 +4,7 @@ export default function QuickMatchBar({ lastResult, nextMatch }) {
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-px overflow-hidden rounded-lg bg-gray-200 shadow-xl md:grid-cols-2">
                 <div className="group flex cursor-pointer items-center justify-between bg-white p-8 transition-colors hover:bg-surface">
                     <div>
-                        <span className="mb-3 block text-[11px] font-bold uppercase tracking-wider text-primary">
+                        <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
                             {lastResult.label}
                         </span>
                         <div className="flex items-center gap-8">
@@ -27,7 +27,7 @@ export default function QuickMatchBar({ lastResult, nextMatch }) {
 
                 <div className="flex items-center justify-between bg-primary p-8 text-white">
                     <div>
-                        <span className="mb-3 block text-[11px] font-bold uppercase tracking-wider text-accent">
+                        <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                             {nextMatch.label}
                         </span>
                         <div className="flex items-center gap-8">
@@ -42,9 +42,20 @@ export default function QuickMatchBar({ lastResult, nextMatch }) {
                             </div>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <p className="text-sm font-bold uppercase text-accent">{nextMatch.note}</p>
-                        <p className="text-sm font-bold">{nextMatch.date}</p>
+                    <div className="flex flex-col items-end gap-3">
+                        <div className="text-right">
+                            <p className="text-sm font-bold uppercase text-accent">{nextMatch.note}</p>
+                            <p className="text-sm font-bold">{nextMatch.date}</p>
+                        </div>
+                        {nextMatch.ticketHref && (
+                            <a
+                                href={nextMatch.ticketHref}
+                                className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-white hover:text-primary"
+                            >
+                                <span className="material-symbols-outlined text-sm">confirmation_number</span>
+                                Comprar boletos
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

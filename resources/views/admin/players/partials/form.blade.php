@@ -72,7 +72,7 @@
     </label>
 
     <label style="display:grid;gap:0.3rem;">
-        <span>URL Foto</span>
+        <span>URL Foto del jugador</span>
         <input type="text" name="photo_path" value="{{ old('photo_path', $player?->photo_path) }}" placeholder="https://..." class="admin-button" style="width:100%;">
     </label>
 
@@ -80,6 +80,49 @@
         <span>Biografía</span>
         <textarea name="biography" rows="4" class="admin-button" style="width:100%;resize:vertical;">{{ old('biography', $player?->biography) }}</textarea>
     </label>
+
+    {{-- ── LEGIONARIO / EXPORTADO ───────────────────────────────────────── --}}
+    <div style="grid-column:1/-1;margin-top:0.5rem;padding:1rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <input type="hidden" name="is_exported" value="0">
+            <input type="checkbox" id="is_exported" name="is_exported" value="1"
+                   @checked(old('is_exported', $player?->is_exported ?? false))
+                   style="width:1.1rem;height:1.1rem;accent-color:#1e3a5f;">
+            <label for="is_exported" style="font-weight:600;font-size:0.95rem;cursor:pointer;">
+                Legionario / Exportado
+                <small style="display:block;font-weight:400;color:#64748b;">Aparecerá en la sección "Talentos que Exportamos" del Home</small>
+            </label>
+        </div>
+
+        <div style="display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr));">
+            <label style="display:grid;gap:0.3rem;">
+                <span>Club extranjero</span>
+                <input type="text" name="foreign_club" value="{{ old('foreign_club', $player?->foreign_club) }}" placeholder="Ej: Norwich City" class="admin-button" style="width:100%;">
+            </label>
+
+            <label style="display:grid;gap:0.3rem;">
+                <span>Liga extranjera</span>
+                <input type="text" name="foreign_league" value="{{ old('foreign_league', $player?->foreign_league) }}" placeholder="Ej: Championship" class="admin-button" style="width:100%;">
+            </label>
+
+            <label style="display:grid;gap:0.3rem;">
+                <span>País del club</span>
+                <input type="text" name="foreign_country" value="{{ old('foreign_country', $player?->foreign_country) }}" placeholder="Ej: Inglaterra" class="admin-button" style="width:100%;">
+            </label>
+
+            <label style="display:grid;gap:0.3rem;">
+                <span>URL Logo del club extranjero</span>
+                <input type="text" name="foreign_club_logo" value="{{ old('foreign_club_logo', $player?->foreign_club_logo) }}" placeholder="https://..." class="admin-button" style="width:100%;">
+            </label>
+
+            <label style="grid-column:1/-1;display:grid;gap:0.3rem;">
+                <span>Palmarés / Hitos (uno por línea)</span>
+                <textarea name="achievements" rows="4" class="admin-button" style="width:100%;resize:vertical;">{{ old('achievements', $player?->achievements ? implode("\n", $player->achievements) : '') }}</textarea>
+                <small style="color:#64748b;">Ej:<br>Campeón LPF Clausura 2022<br>Selección Nacional Sub-23<br>Goleador del torneo</small>
+            </label>
+        </div>
+    </div>
+    {{-- ─────────────────────────────────────────────────────────────────── --}}
 
     <label style="grid-column:1/-1;display:grid;gap:0.3rem;">
         <span>Stats (JSON array)</span>

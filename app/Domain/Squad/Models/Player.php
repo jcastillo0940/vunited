@@ -25,6 +25,12 @@ use Illuminate\Database\Eloquent\Model;
     'attributes',
     'biography',
     'is_active',
+    'is_exported',
+    'foreign_club',
+    'foreign_league',
+    'foreign_country',
+    'foreign_club_logo',
+    'achievements',
     'sort_order',
 ])]
 class Player extends Model
@@ -40,12 +46,14 @@ class Player extends Model
     protected function casts(): array
     {
         return [
-            'birth_date'  => 'date',
-            'gallery'     => 'array',
-            'stats'       => 'array',
-            'attributes'  => 'array',
-            'is_active'   => 'boolean',
-            'sort_order'  => 'integer',
+            'birth_date'   => 'date',
+            'gallery'      => 'array',
+            'stats'        => 'array',
+            'attributes'   => 'array',
+            'achievements' => 'array',
+            'is_active'    => 'boolean',
+            'is_exported'  => 'boolean',
+            'sort_order'   => 'integer',
         ];
     }
 }

@@ -50,13 +50,14 @@ export function normalizeMatchForBar(match) {
 
     const venueNote = isOwnClub(match.home_team, match.home_club) ? 'LOCAL' : 'DE VISITA';
     return {
-        label:    'PRÓXIMO PARTIDO',
+        label:      'PRÓXIMO PARTIDO',
         homeCode,
-        homeName: homeName.substring(0, 12),
+        homeName:   homeName.substring(0, 12),
         awayCode,
-        awayName: awayName.substring(0, 12),
-        note:     match.round_label ?? venueNote,
-        date:     match.date_label ? `${match.date_label}, ${match.time_label}` : '',
+        awayName:   awayName.substring(0, 12),
+        note:       match.round_label ?? venueNote,
+        date:       match.date_label ? `${match.date_label}, ${match.time_label}` : '',
+        ticketHref: '/boletos',
     };
 }
 

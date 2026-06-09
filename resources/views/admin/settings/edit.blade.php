@@ -87,12 +87,58 @@
                 <textarea name="global_seo_description" rows="4">{{ old('global_seo_description', $settings->global_seo_description) }}</textarea>
             </label>
 
-            <label style="display: grid; gap: 0.35rem;">
-                <span>Video hero (YouTube URL)</span>
-                <input type="url" name="hero_video_url" value="{{ old('hero_video_url', $settings->hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
-                <small style="color:#64748b;">URL de YouTube para el fondo del hero de la home. Debe ser un video público. Ejemplo: https://www.youtube.com/watch?v=dQw4w9WgXcQ</small>
-                @error('hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
-            </label>
+            <fieldset style="border:1px solid #e2e8f0;border-radius:0.5rem;padding:1rem 1.25rem;display:grid;gap:0.75rem;">
+                <legend style="font-weight:600;padding:0 0.5rem;">Videos hero (YouTube URLs)</legend>
+                <small style="color:#64748b;margin-top:-0.25rem;">Pega la URL de YouTube de cada página. Deja en blanco para usar la imagen estática de fondo.</small>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Home</span>
+                    <input type="url" name="hero_video_url" value="{{ old('hero_video_url', $settings->hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>FanFest</span>
+                    <input type="url" name="fanfest_hero_video_url" value="{{ old('fanfest_hero_video_url', $settings->fanfest_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('fanfest_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Expedición Indiana</span>
+                    <input type="url" name="expedition_hero_video_url" value="{{ old('expedition_hero_video_url', $settings->expedition_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('expedition_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Patrocinadores</span>
+                    <input type="url" name="sponsors_hero_video_url" value="{{ old('sponsors_hero_video_url', $settings->sponsors_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('sponsors_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Estadio</span>
+                    <input type="url" name="stadium_hero_video_url" value="{{ old('stadium_hero_video_url', $settings->stadium_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('stadium_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Fuerzas Básicas (Academia)</span>
+                    <input type="url" name="academy_hero_video_url" value="{{ old('academy_hero_video_url', $settings->academy_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('academy_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Plantilla</span>
+                    <input type="url" name="squad_hero_video_url" value="{{ old('squad_hero_video_url', $settings->squad_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('squad_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+
+                <label style="display: grid; gap: 0.35rem;">
+                    <span>Noticias</span>
+                    <input type="url" name="news_hero_video_url" value="{{ old('news_hero_video_url', $settings->news_hero_video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                    @error('news_hero_video_url')<small style="color:#991b1b;">{{ $message }}</small>@enderror
+                </label>
+            </fieldset>
 
             <label style="display: flex; gap: 0.5rem; align-items: center;">
                 <input type="hidden" name="maintenance_mode" value="0">

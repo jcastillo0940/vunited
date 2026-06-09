@@ -27,6 +27,10 @@ class PlayerController extends Controller
             $query->where('position_key', $positionKey);
         }
 
+        if ($request->boolean('exported')) {
+            $query->where('is_exported', true);
+        }
+
         return PlayerResource::collection($query->get());
     }
 

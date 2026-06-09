@@ -10,7 +10,7 @@ export default function StandingsCard({ standings }) {
                 <span className="material-symbols-outlined text-accent">leaderboard</span>
             </div>
             <div className="space-y-3">
-                <div className="grid grid-cols-12 gap-2 px-4 text-[11px] font-bold uppercase text-gray-400">
+                <div className="grid grid-cols-12 gap-2 px-4 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
                     <span className="col-span-2">POS</span>
                     <span className="col-span-6">CLUB</span>
                     <span className="col-span-2 text-center">PJ</span>

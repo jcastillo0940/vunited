@@ -42,6 +42,15 @@ const homeMock = {
             { value: '08', label: 'Debutantes 2024' },
         ],
     },
+    exportedTalents: [
+        { id: 1, name: 'Martín Morán',      position: 'Mediocentro',  club: 'Septemvri Sofia',   league: 'efbet Liga',    country: 'Bulgaria',    photoUrl: null, achievements: ['Campeón LPF Clausura', '2 Partidos Internacionales'] },
+        { id: 2, name: 'Davis Contreras',   position: 'Delantero',    club: 'CDS Municipal',     league: 'Primera Cat.', country: 'Guatemala',   photoUrl: null, achievements: ['4× Campeón LPF Clausura', 'Selección U23 Panamá'] },
+        { id: 3, name: 'José Córdoba',      position: 'Def. Central', club: 'Norwich City',      league: 'Championship', country: 'Inglaterra',  photoUrl: null, achievements: ['Campeón Copa Bulgaria', 'Campeón LPF Clausura'] },
+        { id: 4, name: 'Joseph Rosales',    position: 'Lat. Izq.',    club: 'Minnesota United',  league: 'MLS',          country: 'EE.UU.',      photoUrl: null, achievements: ['2× Campeón LPF Clausura'] },
+        { id: 5, name: 'Orman Davis',       position: 'Def. Central', club: 'Independiente CAÍ', league: 'Primera Cat.', country: 'Panamá',      photoUrl: null, achievements: ['4× Campeón LPF Clausura', 'Campeón LPF Apertura'] },
+        { id: 6, name: 'Javier Betegón',    position: 'Extremo Izq.', club: 'Universitario',     league: 'Primera Cat.', country: 'Panamá',      photoUrl: null, achievements: ['Campeón LPF Clausura'] },
+        { id: 7, name: 'Carlos Hernández',  position: 'Centrocampista', club: 'Racing Club B',   league: 'Primera Div.', country: 'Uruguay',     photoUrl: null, achievements: ['Experiencia en Sudamérica'] },
+    ],
     standings: [
         { position: 1, club: 'VERAGUAS UNITED', played: 14, points: 32, featured: true },
         { position: 2, club: 'Tauro FC', played: 14, points: 29 },
@@ -51,7 +60,6 @@ const homeMock = {
     shopPreview: [
         {
             id: 'jersey-local',
-            type: 'featured',
             title: 'Jersey Local 2024',
             subtitle: 'Navy/Sky Blue Pro',
             price: '$65.00',
@@ -59,11 +67,17 @@ const homeMock = {
         },
         {
             id: 'bufanda-gala',
-            type: 'compact',
             title: 'Bufanda de Gala',
             subtitle: 'Edicion Coleccionista',
             price: '$20.00',
             icon: 'sports_score',
+        },
+        {
+            id: 'gorra-indio',
+            title: 'Gorra Indio',
+            subtitle: 'Snapback Oficial',
+            price: '$25.00',
+            icon: 'sports_baseball',
         },
     ],
     membership: {

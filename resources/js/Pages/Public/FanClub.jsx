@@ -1,3 +1,5 @@
+const defaultHeaderLinks = [];
+const defaultFooterLinks = [];
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -153,7 +155,7 @@ export default function FanClub() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <FanClubHero hero={planView.hero} videoUrl={settings.hero_video_url ?? null} />
+                <FanClubHero hero={planView.hero} />
                 <MembershipPlanCard annualPass={planView.annualPass} salesCopy={planView.salesCopy} />
                 <WelcomeKit items={planView.welcomeKit} />
                 <MembershipBenefits benefits={planView.benefits} />

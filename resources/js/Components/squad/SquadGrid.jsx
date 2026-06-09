@@ -12,7 +12,7 @@ export default function SquadGrid({ players }) {
                 {players.map((player) => (
                     <Link
                         key={player.id}
-                        href={`/jugadores/${player.slug}`}
+                        href={`/plantilla/${player.slug}`}
                         className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md transition-all duration-300 hover:shadow-xl"
                     >
                         <div className="relative h-[420px] overflow-hidden">

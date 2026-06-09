@@ -22,6 +22,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
     'global_seo_title',
     'global_seo_description',
     'hero_video_url',
+    'fanfest_hero_video_url',
+    'expedition_hero_video_url',
+    'sponsors_hero_video_url',
+    'stadium_hero_video_url',
+    'academy_hero_video_url',
+    'squad_hero_video_url',
+    'news_hero_video_url',
     'maintenance_mode',
 ])]
 class SiteSetting extends Model

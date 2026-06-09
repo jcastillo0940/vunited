@@ -1,3 +1,5 @@
+import { useLayoutSettings } from '@/context/LayoutContext';
+
 function extractYouTubeId(url) {
     if (!url) return null;
     const patterns = [
@@ -13,8 +15,9 @@ function extractYouTubeId(url) {
     return null;
 }
 
-export default function CalendarHero({ hero, videoUrl }) {
-    const videoId = extractYouTubeId(videoUrl);
+export default function CalendarHero({ hero }) {
+    const settings = useLayoutSettings();
+    const videoId = extractYouTubeId(settings.hero_video_url);
 
     const backgroundStyle = !videoId && hero?.imageUrl
         ? { backgroundImage: `linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72)), url(${hero.imageUrl})` }

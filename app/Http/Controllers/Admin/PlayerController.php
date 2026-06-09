@@ -92,10 +92,16 @@ class PlayerController extends Controller
             'biography'     => ['nullable', 'string'],
             'stats'         => ['nullable', 'string'],
             'attributes'    => ['nullable', 'string'],
-            'gallery'       => ['nullable', 'string'],
-            'is_active'     => ['boolean'],
-            'sort_order'    => ['integer', 'min:0'],
-        ]) + ['is_active' => false, 'sort_order' => 0];
+            'gallery'            => ['nullable', 'string'],
+            'is_active'          => ['boolean'],
+            'is_exported'        => ['boolean'],
+            'foreign_club'       => ['nullable', 'string', 'max:150'],
+            'foreign_league'     => ['nullable', 'string', 'max:150'],
+            'foreign_country'    => ['nullable', 'string', 'max:100'],
+            'foreign_club_logo'  => ['nullable', 'string', 'max:500'],
+            'achievements'       => ['nullable', 'string'],
+            'sort_order'         => ['integer', 'min:0'],
+        ]) + ['is_active' => false, 'is_exported' => false, 'sort_order' => 0];
 
         foreach (['stats', 'attributes', 'gallery'] as $field) {
             if (! empty($data[$field])) {
@@ -104,6 +110,15 @@ class PlayerController extends Controller
             } else {
                 $data[$field] = null;
             }
+        }
+
+        // achievements: one per line → JSON array
+        if (! empty($data['achievements'])) {
+            $data['achievements'] = array_values(
+                array_filter(array_map('trim', explode("\n", $data['achievements'])))
+            );
+        } else {
+            $data['achievements'] = null;
         }
 
         return $data;

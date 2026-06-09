@@ -52,8 +52,8 @@ export default function Academy() {
             <AppLayout
                 navbarBrandName="VERAGUAS UNITED"
                 navbarCtaLabel="SOCIO INDIO"
-                navbarVariant="solid"
-                mainClassName="pt-28"
+                navbarVariant="light"
+                mainClassName="pt-0"
             >
                 <AcademyHero hero={academyMock.hero} />
                 <AcademyStats stats={academyMock.impactStats} />

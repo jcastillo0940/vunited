@@ -1,12 +1,26 @@
+import { useLayoutSettings } from '@/context/LayoutContext';
+import VideoBackground, { extractYouTubeId } from '@/components/common/VideoBackground';
+
+const GRADIENT = 'linear-gradient(115deg, rgba(29,66,138,0.94) 0%, rgba(29,66,138,0.82) 58%, rgba(29,66,138,0.74) 100%)';
+
 export default function SquadHero({ hero }) {
+    const settings = useLayoutSettings();
+    const videoId = extractYouTubeId(settings.squad_hero_video_url);
+
     return (
         <section className="relative overflow-hidden bg-primary pb-16 pt-40 md:pb-20 md:pt-44">
-            <img
-                src={hero.imageUrl}
-                alt={hero.highlight}
-                className="absolute inset-0 h-full w-full object-cover opacity-25"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(29,66,138,0.94)_0%,rgba(29,66,138,0.82)_58%,rgba(29,66,138,0.74)_100%)]" />
+            {videoId ? (
+                <VideoBackground videoId={videoId} gradient={GRADIENT} />
+            ) : (
+                <>
+                    <img
+                        src={hero.imageUrl}
+                        alt={hero.highlight}
+                        className="absolute inset-0 h-full w-full object-cover opacity-25"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(29,66,138,0.94)_0%,rgba(29,66,138,0.82)_58%,rgba(29,66,138,0.74)_100%)]" />
+                </>
+            )}
 
             <div className="page-shell relative z-10 max-w-7xl">
                 <div className="max-w-4xl">

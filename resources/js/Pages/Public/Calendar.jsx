@@ -1,3 +1,5 @@
+const defaultHeaderLinks = [];
+const defaultFooterLinks = [];
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -85,7 +87,7 @@ export default function Calendar() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <CalendarHero hero={calendarMock.hero} videoUrl={settings.hero_video_url ?? null} />
+                <CalendarHero hero={calendarMock.hero} />
                 <NextMatchCard match={nextMatch} />
 
                 <section className="pb-24 pt-16">

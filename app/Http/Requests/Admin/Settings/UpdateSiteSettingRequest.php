@@ -29,6 +29,13 @@ class UpdateSiteSettingRequest extends FormRequest
             'global_seo_title' => ['nullable', 'string', 'max:255'],
             'global_seo_description' => ['nullable', 'string'],
             'hero_video_url' => ['nullable', 'url', 'max:500'],
+            'fanfest_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'expedition_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'sponsors_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'stadium_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'academy_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'squad_hero_video_url' => ['nullable', 'url', 'max:500'],
+            'news_hero_video_url' => ['nullable', 'url', 'max:500'],
             'maintenance_mode' => ['sometimes', 'boolean'],
         ];
     }

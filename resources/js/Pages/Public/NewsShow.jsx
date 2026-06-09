@@ -16,9 +16,7 @@ export default function NewsShow({ slug }) {
         async function loadPage() {
             try {
                 setLoading(true);
-                const [siteSettings, header, footer, news] = await Promise.all([
-                    fetchNewsBySlug(slug),
-                ]);
+                const news = await fetchNewsBySlug(slug);
 
                 if (!active) {
                     return;

@@ -8,6 +8,10 @@ const playerService = {
     getPlayer(slug) {
         return apiClient.get(`/players/${slug}`);
     },
+
+    getExportedPlayers() {
+        return apiClient.get('/players', { params: { exported: 1 } });
+    },
 };
 
 export default playerService;

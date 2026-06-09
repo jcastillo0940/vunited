@@ -2,10 +2,10 @@ export default function AcademyBlock({ academy }) {
     return (
         <div className="group relative mt-20 overflow-hidden rounded-lg border-l-8 border-primary bg-surface p-12">
             <div className="relative z-10">
-                <h2 className="mb-6 font-display text-3xl font-bold uppercase text-primary">
+                <h2 className="mb-6 font-display text-2xl font-bold uppercase tracking-tight text-primary">
                     {academy.title}
                 </h2>
-                <p className="mb-10 max-w-2xl leading-relaxed text-gray-600">
+                <p className="mb-10 max-w-2xl text-sm leading-relaxed text-gray-600">
                     {academy.description}
                 </p>
                 <div className="grid grid-cols-2 gap-6 md:grid-cols-4">

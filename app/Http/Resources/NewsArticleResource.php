@@ -33,6 +33,10 @@ class NewsArticleResource extends JsonResource
             return null;
         }
 
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
         return parse_url(Storage::disk('public')->url($path), PHP_URL_PATH) ?: null;
     }
 }

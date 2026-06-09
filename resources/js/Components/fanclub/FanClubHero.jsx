@@ -1,4 +1,5 @@
 import CTAButton from '@/components/common/CTAButton';
+import { useLayoutSettings } from '@/context/LayoutContext';
 
 function extractYouTubeId(url) {
     if (!url) return null;
@@ -15,8 +16,9 @@ function extractYouTubeId(url) {
     return null;
 }
 
-export default function FanClubHero({ hero, videoUrl }) {
-    const videoId = extractYouTubeId(videoUrl);
+export default function FanClubHero({ hero }) {
+    const settings = useLayoutSettings();
+    const videoId = extractYouTubeId(settings.hero_video_url);
 
     const backgroundStyle = !videoId && hero?.imageUrl
         ? { backgroundImage: `linear-gradient(rgba(29,66,138,0.8),rgba(29,66,138,0.42)), url(${hero.imageUrl})` }

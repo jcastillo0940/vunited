@@ -42,11 +42,16 @@ Route::get('/plantilla', function () {
     return Inertia::render('Public/Squad');
 })->name('squad.index');
 
-Route::get('/jugadores/{slug}', function (string $slug) {
+Route::get('/plantilla/{slug}', function (string $slug) {
     return Inertia::render('Public/PlayerProfile', [
         'slug' => $slug,
     ]);
 })->name('players.show');
+
+// alias legacy
+Route::get('/jugadores/{slug}', function (string $slug) {
+    return redirect()->route('players.show', $slug, 301);
+});
 
 Route::get('/fuerzas-basicas', function () {
     return Inertia::render('Public/Academy');

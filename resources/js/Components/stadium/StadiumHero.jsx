@@ -1,10 +1,22 @@
+import { useLayoutSettings } from '@/context/LayoutContext';
+import VideoBackground, { extractYouTubeId } from '@/components/common/VideoBackground';
+
+const GRADIENT = 'linear-gradient(135deg, rgba(29,66,138,0.95), rgba(29,66,138,0.72))';
+
 export default function StadiumHero({ hero }) {
+    const settings = useLayoutSettings();
+    const videoId = extractYouTubeId(settings.stadium_hero_video_url);
+
     return (
         <section className="relative flex min-h-[58vh] items-end overflow-hidden bg-primary pt-28">
-            <div className="absolute inset-0">
-                <img src={hero.imageUrl} alt={hero.title} className="h-full w-full object-cover opacity-45" />
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72))]" />
-            </div>
+            {videoId ? (
+                <VideoBackground videoId={videoId} gradient={GRADIENT} />
+            ) : (
+                <div className="absolute inset-0">
+                    <img src={hero.imageUrl} alt={hero.title} className="h-full w-full object-cover opacity-45" />
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(29,66,138,0.95),rgba(29,66,138,0.72))]" />
+                </div>
+            )}
 
             <div className="page-shell relative z-10 mx-auto w-full max-w-7xl px-margin-mobile pb-16 md:px-margin-desktop md:pb-20">
                 <div className="max-w-3xl">

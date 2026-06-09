@@ -1,4 +1,3 @@
-import { useLayoutSettings } from "@/context/LayoutContext";
 import { useEffect, useMemo, useState } from 'react';
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -51,7 +50,6 @@ const fallbackSettings = {
 };
 
 export default function StyleGuide() {
-    const settings = useLayoutSettings();
     const defaultHeaderLinks = useMemo(() => buildPublicHeaderLinks(), []);
     const defaultFooterLinks = useMemo(() => buildPublicFooterLinks(), []);
     const [settings, setSettings] = useState(fallbackSettings);

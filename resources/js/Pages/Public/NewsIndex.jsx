@@ -1,7 +1,7 @@
-import { useLayoutSettings } from "@/context/LayoutContext";
-import { Head, Link } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { Head } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import NewsHero from '@/components/news/NewsHero';
 import NewsCard from '@/components/cards/NewsCard';
 import LoadingState from '@/components/common/LoadingState';
 import ErrorState from '@/components/common/ErrorState';
@@ -9,7 +9,6 @@ import EmptyState from '@/components/common/EmptyState';
 import { fetchNews } from '@/services/newsService';
 
 export default function NewsIndex() {
-    const settings = useLayoutSettings();
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -20,9 +19,7 @@ export default function NewsIndex() {
         async function loadPage() {
             try {
                 setLoading(true);
-                const [siteSettings, header, footer, news] = await Promise.all([
-                    fetchNews(),
-                ]);
+                const news = await fetchNews();
 
                 if (!active) {
                     return;
@@ -51,10 +48,7 @@ export default function NewsIndex() {
         };
     }, []);
 
-    const pageTitle = useMemo(
-        () => settings.global_seo_title || 'Noticias | Veraguas United FC',
-        [settings.global_seo_title],
-    );
+    const pageTitle = 'Noticias | Veraguas United FC';
 
     const featuredArticle = articles.find((article) => article.isFeatured) ?? articles[0] ?? null;
     const regularArticles = featuredArticle
@@ -69,30 +63,7 @@ export default function NewsIndex() {
                 navbarCtaLabel="UNETE A LA TRIBU"
                 navbarVariant="light"
             >
-                <section className="bg-surface pb-12 pt-40">
-                    <div className="page-shell max-w-7xl">
-                        <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
-                            newsroom
-                        </p>
-                        <div className="mt-5 flex flex-col gap-6 border-b border-gray-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
-                            <div className="max-w-3xl">
-                                <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-primary md:text-7xl">
-                                    CENTRO DE NOTICIAS
-                                </h1>
-                                <p className="mt-4 text-lg leading-relaxed text-gray-600">
-                                    Actualidad, fichajes, cronicas y vida institucional del club en una sola portada editorial.
-                                </p>
-                            </div>
-                            <Link
-                                href="/"
-                                className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-accent transition-colors hover:text-primary"
-                            >
-                                Volver al inicio
-                                <span className="material-symbols-outlined text-sm">arrow_back</span>
-                            </Link>
-                        </div>
-                    </div>
-                </section>
+                <NewsHero />
 
                 <section className="pb-24 pt-12">
                     <div className="page-shell max-w-7xl">
@@ -119,7 +90,7 @@ export default function NewsIndex() {
                                 ) : null}
 
                                 {regularArticles.length ? (
-                                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                                         {regularArticles.map((article) => (
                                             <NewsCard key={article.slug} article={article} />
                                         ))}

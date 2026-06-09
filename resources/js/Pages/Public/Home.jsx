@@ -7,6 +7,7 @@ import HomeHero from '@/components/home/HomeHero';
 import QuickMatchBar from '@/components/home/QuickMatchBar';
 import HomeNewsSection from '@/components/home/HomeNewsSection';
 import AcademyBlock from '@/components/home/AcademyBlock';
+import ExportedTalents from '@/components/home/ExportedTalents';
 import StandingsCard from '@/components/home/StandingsCard';
 import ShopPreview from '@/components/home/ShopPreview';
 import MembershipBanner from '@/components/home/MembershipBanner';
@@ -15,26 +16,33 @@ import { fetchNews } from '@/services/newsService';
 import matchService, { normalizeMatchForBar } from '@/services/matchService';
 import standingService, { normalizeStandingsForCard } from '@/services/standingService';
 import sponsorService from '@/services/sponsorService';
+import playerService from '@/services/playerService';
+import productService from '@/services/productService';
 
 export default function Home() {
     const settings = useLayoutSettings();
-    const [newsItems, setNewsItems] = useState(defaultNewsItems);
+    const [newsItems, setNewsItems] = useState([]);
+    const [newsLoading, setNewsLoading] = useState(true);
     const [lastResult, setLastResult] = useState(homeMock.lastResult);
     const [nextMatch, setNextMatch] = useState(homeMock.nextMatch);
     const [standings, setStandings] = useState(homeMock.standings);
     const [partners, setPartners]   = useState(homeMock.partners);
+    const [exportedPlayers, setExportedPlayers] = useState([]);
+    const [shopProducts, setShopProducts] = useState([]);
 
     useEffect(() => {
         let active = true;
 
         async function loadHome() {
             try {
-                const [siteSettings, header, footer, news, featuredRes, finishedRes, standingsRes, sponsorsRes] = await Promise.all([
+                const [news, featuredRes, finishedRes, standingsRes, sponsorsRes, exportedRes, productsRes] = await Promise.all([
                     fetchNews(),
                     matchService.getFeatured().catch(() => null),
                     matchService.getMatches({ status: 'finished' }).catch(() => null),
                     standingService.getStandings().catch(() => null),
                     sponsorService.getSponsors().catch(() => null),
+                    playerService.getExportedPlayers().catch(() => null),
+                    productService.getProducts({ limit: 5 }).catch(() => null),
                 ]);
 
                 if (!active) {
@@ -42,6 +50,7 @@ export default function Home() {
                 }
 
                 setNewsItems(normalizeNews(news));
+                setNewsLoading(false);
 
                 const featuredMatch = featuredRes?.data?.data ?? null;
                 if (featuredMatch) setNextMatch(normalizeMatchForBar(featuredMatch));
@@ -56,12 +65,18 @@ export default function Home() {
 
                 const sponsorRows = sponsorsRes?.data?.data ?? [];
                 if (sponsorRows.length) setPartners(sponsorRows);
+
+                const exportedRows = exportedRes?.data?.data ?? [];
+                if (exportedRows.length) setExportedPlayers(exportedRows);
+
+                const productRows = productsRes?.data?.data ?? [];
+                if (productRows.length) setShopProducts(productRows);
             } catch {
                 if (!active) {
                     return;
                 }
 
-                setNewsItems(defaultNewsItems);
+                setNewsLoading(false);
             }
         }
 
@@ -86,19 +101,20 @@ export default function Home() {
                 navbarVariant="light"
                 mainClassName="pt-0"
             >
-                <HomeHero hero={homeMock.hero} videoUrl={settings.hero_video_url ?? null} />
+                <HomeHero hero={homeMock.hero} />
                 <QuickMatchBar lastResult={lastResult} nextMatch={nextMatch} />
 
                 <main className="relative z-10 mx-auto max-w-7xl px-margin-mobile py-24 md:px-margin-desktop">
                     <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-16">
                         <div className="lg:col-span-8">
-                            <HomeNewsSection articles={newsItems} />
+                            <HomeNewsSection articles={newsItems} loading={newsLoading} />
+                            <ExportedTalents players={exportedPlayers} />
                             <AcademyBlock academy={homeMock.academy} />
                         </div>
 
-                        <aside className="space-y-16 lg:col-span-4 lg:pl-2">
+                        <aside className="flex flex-col gap-16 lg:col-span-4 lg:pl-2 lg:justify-between">
                             <StandingsCard standings={standings} />
-                            <ShopPreview products={homeMock.shopPreview} />
+                            <ShopPreview products={shopProducts} />
                             <MembershipBanner membership={homeMock.membership} />
                         </aside>
                     </div>
@@ -111,7 +127,7 @@ export default function Home() {
 }
 
 function normalizeNews(news = []) {
-    const normalized = news.map((article) => ({
+    return news.slice(0, 3).map((article) => ({
         title: article.title,
         slug: article.slug,
         summary: article.summary,
@@ -119,14 +135,8 @@ function normalizeNews(news = []) {
             article.featured_image_url ??
             'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80',
         href: `/noticias/${article.slug}`,
-        categoryLabel: article.category?.name ? `OFICIAL / ${article.category.name}` : 'OFICIAL / NOTICIAS',
+        categoryLabel: article.category?.name ?? 'NOTICIAS',
     }));
-
-    if (normalized.length >= 3) {
-        return normalized.slice(0, 3);
-    }
-
-    return [...normalized, ...defaultNewsItems].slice(0, 3);
 }
 
 function toMenuLinks(items = [], fallback = [], activeUrl = '') {
@@ -141,36 +151,3 @@ function toMenuLinks(items = [], fallback = [], activeUrl = '') {
         children: toMenuLinks(item.children ?? [], [], activeUrl),
     }));
 }
-
-const defaultNewsItems = [
-    {
-        title: "EL 'GATO' SE UNE AL SUENO INDIO",
-        slug: 'el-gato',
-        summary:
-            'El delantero internacional panameno llega a Santiago para reforzar el frente de ataque.',
-        imageUrl:
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuAf7AkFgpKlqh0kbfgEJrn9D2moNnXvGMv27p92JIx4oxATSUgEtgtc781CrTwrXWgQy8vg425iDE1FICvBJbtNi0aQRpmF6r_Dp4geUcPfXZlIorQ43xeSaKO6eIj7cgnEt43nxZ3_cU90_Dm1jBopQhXb8D8ERsHTXvw_4zQEshl9jj548mLcAYxfYivTYHZDi3JrgvHUgh-lkIqoqiQxoOf_t1ou_pJVWNYexZpFbFrzDv_LlJt5i1u6WwLFm5PfHJjTHF_bBcm6',
-        href: '/noticias/el-gato',
-        categoryLabel: 'OFICIAL / FICHAJES',
-    },
-    {
-        title: '3 PUNTOS DE ORO EN CHITRE',
-        slug: 'chitre',
-        summary:
-            'Veraguas United domina el mediocampo y se lleva una victoria crucial ante Herrera.',
-        imageUrl:
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuDyCfPgU4crg3IXP92SnIFelmVUhQ9CYVG01UYbIaBUwu3CT01KrkWbef7J-niV5Mn3bxXrbRGhukgDEg5ZqEOZGbKV9VSfc9aaDQ5I6twDbiITpHQ3WXFycYQDBbXarzrEtEaIGNSB2c7bjVeT8P3khnB4UvzbSlYgsmc8joEg5G4dHf5r5xf3kwvaI4BIprc__oK_l8_9xQZ2A_Uy-qwGaaNdgjSe_mt46WfKQUFQIzAdpSMIdu5MP0QMaIiZKa7lUhtEMoNxJyFp',
-        href: '/noticias/chitre',
-        categoryLabel: 'CRONICA',
-    },
-    {
-        title: 'CLINICA EN SANTIAGO: SEMILLERO INDIO',
-        slug: 'semillero',
-        summary:
-            'Mas de 300 ninos participaron en la jornada de integracion con el primer equipo.',
-        imageUrl:
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuB9aeovhReGLhXmq0ggpaxXTjA3qCKdTsnMR9VZrf8LsJI-PCu1wB6WJubgLw1Wp2aSJTP4-E5c2K-xNChuDai-wCDqHttgeGMZBQThCyBeGAxjcJZEY07ILUTlqf8row1en2od0V0pV6BE2fsy8Kfi60BCcZRDvujXhzT0H1ld4FMHNdOLYYhok4M1-M0KQMkch_KZiQK6XdW1Pk8kcrqJleIrAOngL3MZXvqSRmngLJQGj2cxBtJmOb9MBPeoiXaax6U4tUwgp07n',
-        href: '/noticias/semillero',
-        categoryLabel: 'SOCIAL',
-    },
-];

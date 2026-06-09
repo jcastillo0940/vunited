@@ -1,3 +1,5 @@
+const defaultHeaderLinks = [];
+const defaultFooterLinks = [];
 import { useLayoutSettings } from "@/context/LayoutContext";
 import { Head } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
