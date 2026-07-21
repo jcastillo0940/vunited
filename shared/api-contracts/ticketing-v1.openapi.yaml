@@ -1,0 +1,141 @@
+openapi: 3.1.0
+info:
+  title: Veraguas United Ticketing API
+  version: 1.0.0
+  description: >
+    Contrato publico de Ticketing (Fase 7): eventos vendibles, ordenes,
+    boletos y validacion en puerta. Los endpoints internos de operadores y
+    escaner requieren autenticacion Sanctum (Bearer token).
+  license:
+    name: Propietaria
+    identifier: LicenseRef-Proprietary
+servers:
+  - url: /api/v1/ticketing
+security: []
+paths:
+  /healthz:
+    get:
+      summary: Estado del servicio (DB + Redis)
+      operationId: healthz
+      responses:
+        "200": { description: Servicio sano }
+        "503": { description: Servicio degradado }
+  /events:
+    get:
+      summary: Listar eventos visibles
+      operationId: listEvents
+      responses:
+        "200": { description: Lista de eventos }
+  /events/{publicId}:
+    get:
+      summary: Detalle de un evento
+      operationId: getEvent
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Evento }
+        "404": { description: No encontrado }
+  /events/{publicId}/zones:
+    get:
+      summary: Zonas activas de un evento (sin datos de reserva interna)
+      operationId: listEventZones
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Zonas }
+        "404": { description: No encontrado }
+  /events/{publicId}/orders:
+    post:
+      summary: Crear orden (draft -> hold_active), reclama capacidad atomicamente
+      operationId: createOrder
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "201": { description: Orden creada, cupo reservado }
+        "404": { description: Evento no encontrado }
+        "409": { description: Cupo insuficiente o error de negocio }
+  /orders/{publicId}:
+    get:
+      summary: Consultar orden por su token opaco (public_id)
+      operationId: getOrder
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Orden }
+        "404": { description: No encontrada }
+  /orders/{publicId}/payment:
+    post:
+      summary: Solicita payment intent a Payments (hold_active -> pending_payment)
+      operationId: requestOrderPayment
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Intent creado }
+        "404": { description: No encontrada }
+        "422": { description: Payments rechazo la solicitud, orden marcada failed }
+  /internal/payments/events:
+    post:
+      summary: Webhook interno de Payments (paid/failed). Requiere Bearer con el secreto interno.
+      operationId: paymentEvent
+      security:
+        - internalSecret: []
+      responses:
+        "200": { description: Orden actualizada }
+        "401": { description: Secreto invalido }
+        "404": { description: Orden no encontrada }
+  /auth/login:
+    post:
+      summary: Login de operador (backoffice o escaner), emite token Sanctum
+      operationId: operatorLogin
+      responses:
+        "200": { description: Token emitido }
+        "422": { description: Credenciales invalidas }
+  /validate:
+    post:
+      summary: Valida un boleto en puerta. Atomico - solo el primer escaneo marca uso.
+      operationId: validateTicket
+      security:
+        - operatorAuth: []
+      responses:
+        "200": { description: Boleto valido, marcado como usado }
+        "409": { description: "invalid | already_used | revoked | wrong_event | wrong_door | not_found" }
+  /tickets/{publicId}/wallet/google:
+    get:
+      summary: Enlace firmado para guardar el boleto en Google Wallet
+      operationId: googleWalletLink
+      responses:
+        "200": { description: save_url }
+        "404": { description: Boleto no encontrado }
+        "501": { description: Google Wallet no configurado }
+  /tickets/{publicId}/wallet/apple:
+    get:
+      summary: Pase .pkpass firmado para Apple Wallet
+      operationId: appleWalletPass
+      responses:
+        "200": { description: archivo .pkpass }
+        "404": { description: Boleto no encontrado }
+        "501": { description: Apple Wallet no configurado (sin certificado) }
+components:
+  securitySchemes:
+    internalSecret:
+      type: http
+      scheme: bearer
+    operatorAuth:
+      type: http
+      scheme: bearer
+      description: Token Sanctum de operador obtenido via /auth/login

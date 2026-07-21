@@ -13,3 +13,11 @@ createRoot(rootElement).render(
         <App />
     </StrictMode>,
 );
+
+// Service worker del escaner: permite que /escaner cargue sin red. Las
+// llamadas a la API nunca se sirven desde cache (ver public/sw.js).
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => null);
+    });
+}

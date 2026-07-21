@@ -1,0 +1,10 @@
+{
+    "name": "Veraguas United - Escáner de boletos",
+    "short_name": "VU Escáner",
+    "description": "Validación de entradas en puerta para Veraguas United FC.",
+    "start_url": "/escaner",
+    "display": "standalone",
+    "background_color": "#1D428A",
+    "theme_color": "#1D428A",
+    "icons": []
+}

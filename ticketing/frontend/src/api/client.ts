@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1/ticketing';
+// boletos.wp-pa.com sirve el backend de ticketing directo en /api (dominio
+// dedicado 1:1, no via el gateway compartido api.veraguas.internal de Fase 2).
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 export class ApiError extends Error {
     status: number;

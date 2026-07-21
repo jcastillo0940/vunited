@@ -1,33 +1,91 @@
-import { Container, Card, Table, type Column, Button } from '@veraguas/ui';
-
-interface SummaryLine {
-    id: string;
-    concept: string;
-    amount: string;
-}
-
-const LINES: SummaryLine[] = [
-    { id: '1', concept: 'General × 2', amount: 'B/. 16.00' },
-    { id: '2', concept: 'Cargo por servicio', amount: 'B/. 1.50' },
-];
-
-const columns: Column<SummaryLine>[] = [
-    { key: 'concept', header: 'Concepto', render: (row) => row.concept },
-    { key: 'amount', header: 'Monto', render: (row) => row.amount, align: 'right' },
-];
+import { useEffect, useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Container, Card, FormField, Input, Button, ErrorState, LoadingState } from '@veraguas/ui';
+import { listZones, createOrder, type ZoneSummary } from '../api/ticketing';
+import { useOrderFlow } from '../context/OrderFlowContext';
+import { ApiError } from '../api/client';
 
 export function Summary() {
+    const { eventId, zoneId, quantity, setOrderId } = useOrderFlow();
+    const navigate = useNavigate();
+    const [zone, setZone] = useState<ZoneSummary | null>(null);
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!eventId || !zoneId) {
+            navigate('/zona');
+
+            return;
+        }
+        listZones(eventId).then((res) => {
+            setZone(res.data.find((z) => z.id === zoneId) ?? null);
+        });
+    }, [eventId, zoneId, navigate]);
+
+    async function handleSubmit(event: FormEvent) {
+        event.preventDefault();
+        if (!eventId || !zoneId) return;
+        setSubmitting(true);
+        setError(null);
+
+        try {
+            const idempotencyKey = crypto.randomUUID();
+            const res = await createOrder(eventId, {
+                customer_email: email,
+                customer_name: name || undefined,
+                idempotency_key: idempotencyKey,
+                items: [{ zone_id: zoneId, quantity }],
+            });
+            setOrderId(res.data.id);
+            navigate('/checkout');
+        } catch (err) {
+            setError(err instanceof ApiError ? err.message : 'No se pudo reservar el cupo. Intenta de nuevo.');
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    if (!zone) return <LoadingState label="Cargando resumen…" />;
+
+    const total = zone.price * quantity;
+
     return (
         <Container className="section-space max-w-xl">
             <h1 className="section-heading mb-8">Resumen de tu orden</h1>
-            <Table columns={columns} rows={LINES} rowKey={(row) => row.id} />
-            <Card className="mt-6 flex items-center justify-between">
-                <span className="font-semibold text-text-main">Total</span>
-                <span className="text-xl font-bold text-primary">B/. 17.50</span>
+            <Card className="mb-6 flex items-center justify-between">
+                <div>
+                    <p className="font-semibold text-text-main">
+                        {zone.name} × {quantity}
+                    </p>
+                    <p className="text-sm text-text-main/60">
+                        {zone.currency} {zone.price.toFixed(2)} c/u
+                    </p>
+                </div>
+                <span className="text-xl font-bold text-primary">
+                    {zone.currency} {total.toFixed(2)}
+                </span>
             </Card>
-            <Button as="a" href="/checkout" size="lg" className="mt-8 w-full">
-                Continuar a checkout
-            </Button>
+
+            {error ? <ErrorState message={error} /> : null}
+
+            <form onSubmit={handleSubmit}>
+                <Card>
+                    <FormField htmlFor="email" label="Correo" required>
+                        <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </FormField>
+                    <div className="mt-4">
+                        <FormField htmlFor="name" label="Nombre completo">
+                            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                        </FormField>
+                    </div>
+                    <Button type="submit" size="lg" pending={submitting} pendingLabel="Reservando…" className="mt-6 w-full">
+                        Reservar cupo y continuar
+                    </Button>
+                </Card>
+            </form>
         </Container>
     );
 }

@@ -1,26 +1,39 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Grid, Card, Badge, EmptyState } from '@veraguas/ui';
-
-const TICKETS = [
-    { id: '1', match: 'Veraguas United vs Herrera FC', date: '19 OCT, 19:00', zone: 'General' },
-];
+import { Container, Grid, Card, Badge, EmptyState, LoadingState } from '@veraguas/ui';
+import { getOrderTickets, type TicketView } from '../api/ticketing';
+import { useOrderFlow } from '../context/OrderFlowContext';
 
 export function Wallet() {
+    const { orderId } = useOrderFlow();
+    const [tickets, setTickets] = useState<TicketView[] | null>(null);
+
+    useEffect(() => {
+        if (!orderId) {
+            setTickets([]);
+
+            return;
+        }
+        getOrderTickets(orderId).then((res) => setTickets(res.data));
+    }, [orderId]);
+
+    if (tickets === null) return <LoadingState label="Cargando tus entradas…" />;
+
     return (
         <Container className="section-space">
             <h1 className="section-heading mb-10">Mi wallet</h1>
-            {TICKETS.length === 0 ? (
-                <EmptyState icon="confirmation_number" title="Todavía no tienes entradas" />
+            {tickets.length === 0 ? (
+                <EmptyState icon="confirmation_number" title="Todavía no tienes entradas" message="Compra tus boletos desde Eventos." />
             ) : (
                 <Grid cols={3}>
-                    {TICKETS.map((ticket) => (
-                        <Link key={ticket.id} to={`/ticket/${ticket.id}`}>
+                    {tickets.map((ticket) => (
+                        <Link key={ticket.id} to={`/ticket/${ticket.id}`} state={{ ticket }}>
                             <Card className="flex flex-col gap-2">
-                                <Badge tone="accent" className="w-fit">
-                                    {ticket.zone}
+                                <Badge tone={ticket.status === 'issued' ? 'accent' : ticket.status === 'used' ? 'neutral' : 'danger'} className="w-fit">
+                                    {ticket.zone_name}
                                 </Badge>
-                                <h2 className="font-display text-lg font-bold uppercase text-primary">{ticket.match}</h2>
-                                <p className="text-sm text-text-main/60">{ticket.date}</p>
+                                <p className="text-sm text-text-main/60">{ticket.seat_label ?? 'Admisión general'}</p>
+                                <p className="text-xs uppercase text-text-main/40">{ticket.status}</p>
                             </Card>
                         </Link>
                     ))}

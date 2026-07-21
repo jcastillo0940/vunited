@@ -24,5 +24,15 @@ TMP_LINK="$BASE/current.tmp.$$"
 ln -sfn "$TARGET" "$TMP_LINK"
 mv -T "$TMP_LINK" "$BASE/current"
 
+# PHP-FPM cachea la resolucion de realpath de los symlinks (realpath_cache_ttl,
+# 120s por defecto) y opcache por ruta absoluta. Sin este reload, un cambio de
+# `current` puede seguir sirviendo la release anterior hasta que ese cache
+# expire por su cuenta - encontrado de verdad durante el deploy de Fase 7
+# (ticketing sirvio contenido del release anterior varios minutos tras
+# activar el nuevo, ver docs/operations/phase7-*.md).
+if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet php8.3-fpm 2>/dev/null; then
+    sudo systemctl reload php8.3-fpm
+fi
+
 log_release_event "$SERVICE" "activate release=$RELEASE_NAME"
-info "current -> $TARGET"
+info "current -> $TARGET (php-fpm recargado)"
