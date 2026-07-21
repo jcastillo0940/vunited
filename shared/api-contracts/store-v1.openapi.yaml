@@ -1,0 +1,178 @@
+openapi: 3.1.0
+info:
+  title: Veraguas United Store Catalog API
+  version: 1.0.0
+  description: Contrato publico de solo lectura para el catalogo Store.
+  license:
+    name: Propietaria
+    identifier: LicenseRef-Proprietary
+servers:
+  - url: /api/v1/store
+security: []
+paths:
+  /products:
+    get:
+      summary: Listar productos activos
+      operationId: listProducts
+      parameters:
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: featured
+          in: query
+          schema: { type: boolean }
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Productos activos
+          headers:
+            X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Product" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+  /products/{slug}:
+    get:
+      summary: Consultar un producto activo
+      operationId: showProduct
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Producto activo
+          headers:
+            X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/Product" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /categories:
+    get:
+      summary: Listar categorías activas
+      operationId: listCategories
+      responses:
+        "200":
+          description: Categorias activas
+          headers:
+            X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Category" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+  /featured-product:
+    get:
+      summary: Consultar el producto destacado
+      operationId: showFeaturedProduct
+      responses:
+        "200":
+          description: Producto destacado
+          headers:
+            X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/Product" }
+        "404": { $ref: "#/components/responses/NotFound" }
+components:
+  headers:
+    CorrelationId:
+      description: Identificador propagado o generado para trazabilidad.
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+  responses:
+    BadRequest:
+      description: Solicitud inválida
+      headers:
+        X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error: { type: string }
+    NotFound:
+      description: Recurso no encontrado
+      headers:
+        X-Correlation-ID: { $ref: "#/components/headers/CorrelationId" }
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error: { type: string }
+  schemas:
+    Category:
+      type: object
+      required: [name, slug, sort_order, metadata]
+      properties:
+        name: { type: string }
+        slug: { type: string }
+        description: { type: [string, "null"] }
+        sort_order: { type: integer }
+        metadata: { type: object }
+    Product:
+      type: object
+      required:
+        - name
+        - slug
+        - price_minor
+        - currency
+        - track_stock
+        - is_featured
+        - out_of_stock
+      properties:
+        sku: { type: [string, "null"] }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: [string, "null"] }
+        short_description: { type: [string, "null"] }
+        price_minor: { type: integer, minimum: 0 }
+        compare_at_price_minor: { type: [integer, "null"], minimum: 0 }
+        currency: { type: string, pattern: "^[A-Z]{3}$" }
+        stock_quantity: { type: [integer, "null"] }
+        track_stock: { type: boolean }
+        is_featured: { type: boolean }
+        badge: { type: [string, "null"] }
+        image_url: { type: [string, "null"] }
+        gallery:
+          type: array
+          items: { type: string }
+        metadata: { type: object }
+        sort_order: { type: integer }
+        out_of_stock: { type: boolean }
+        category:
+          oneOf:
+            - type: "null"
+            - type: object
+              required: [name, slug]
+              properties:
+                name: { type: string }
+                slug: { type: string }

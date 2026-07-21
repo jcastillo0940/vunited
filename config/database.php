@@ -64,6 +64,29 @@ return [
             ]) : [],
         ],
 
+        // Transitional connection for the Store extraction. Domain models keep
+        // using the default connection until the replicated data is reconciled
+        // and the production cutover is explicitly enabled.
+        'store' => [
+            'driver' => 'mysql',
+            'url' => env('STORE_DB_URL'),
+            'host' => env('STORE_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('STORE_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('STORE_DB_DATABASE', 'veraguas_store'),
+            'username' => env('STORE_DB_USERNAME', 'veraguas_store'),
+            'password' => env('STORE_DB_PASSWORD', ''),
+            'unix_socket' => env('STORE_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => 'InnoDB',
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('STORE_MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

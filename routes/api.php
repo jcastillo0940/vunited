@@ -71,3 +71,12 @@ Route::name('api.')->group(function () {
     Route::get('/ticketing/orders/{orderNumber}', [TicketOrderController::class, 'show'])->name('ticketing.orders.show');
     Route::get('/ticketing/orders/{orderNumber}/tickets', [IssuedTicketController::class, 'forOrder'])->name('ticketing.orders.tickets');
 });
+
+// Versioned Store contract used by the future standalone service. The legacy
+// /api/store routes remain available while consumers migrate incrementally.
+Route::prefix('v1/store')->name('api.v1.store.')->group(function (): void {
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/categories', [ProductCategoryController::class, 'index'])->name('categories.index');
+    Route::get('/featured-product', [ProductController::class, 'featured'])->name('products.featured');
+});

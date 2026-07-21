@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Domain\Store\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\V1\Store\ProductResource as VersionedProductResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,12 +41,16 @@ class ProductController extends Controller
             });
         }
 
-        return ProductResource::collection(
+        $resource = $request->routeIs('api.v1.store.*')
+            ? VersionedProductResource::class
+            : ProductResource::class;
+
+        return $resource::collection(
             $query->orderBy('sort_order')->orderBy('name')->get(),
         );
     }
 
-    public function featured(): JsonResponse
+    public function featured(Request $request): JsonResponse
     {
         $product = Product::query()
             ->with('category')
@@ -66,10 +71,14 @@ class ProductController extends Controller
             ], 404);
         }
 
-        return (new ProductResource($product))->response();
+        $resource = $request->routeIs('api.v1.store.*')
+            ? VersionedProductResource::class
+            : ProductResource::class;
+
+        return (new $resource($product))->response();
     }
 
-    public function show(string $slug): JsonResponse
+    public function show(Request $request, string $slug): JsonResponse
     {
         $product = Product::query()
             ->with('category')
@@ -88,6 +97,10 @@ class ProductController extends Controller
             ], 404);
         }
 
-        return (new ProductResource($product))->response();
+        $resource = $request->routeIs('api.v1.store.*')
+            ? VersionedProductResource::class
+            : ProductResource::class;
+
+        return (new $resource($product))->response();
     }
 }

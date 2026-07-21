@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.permission' => \App\Http\Middleware\EnsureAdminHasPermission::class,
         ]);
 
+        $middleware->api(append: [
+            \App\Http\Middleware\AttachCorrelationId::class,
+        ]);
+
         $middleware->redirectGuestsTo(function ($request) {
             if ($request->is('admin') || $request->is('admin/*')) {
                 if (\Illuminate\Support\Facades\Auth::guard('web')->check()) {

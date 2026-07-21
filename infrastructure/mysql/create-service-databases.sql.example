@@ -1,0 +1,21 @@
+-- Plantilla. Reemplazar cada marcador antes de ejecutar y no guardar contraseñas en Git.
+CREATE DATABASE IF NOT EXISTS veraguas_web
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS veraguas_store
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS veraguas_ticketing
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS veraguas_payments
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'veraguas_web'@'127.0.0.1' IDENTIFIED BY '<WEB_PASSWORD>';
+CREATE USER IF NOT EXISTS 'veraguas_store'@'127.0.0.1' IDENTIFIED BY '<STORE_PASSWORD>';
+CREATE USER IF NOT EXISTS 'veraguas_ticketing'@'127.0.0.1' IDENTIFIED BY '<TICKETING_PASSWORD>';
+CREATE USER IF NOT EXISTS 'veraguas_payments'@'127.0.0.1' IDENTIFIED BY '<PAYMENTS_PASSWORD>';
+
+GRANT ALL PRIVILEGES ON veraguas_web.* TO 'veraguas_web'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON veraguas_store.* TO 'veraguas_store'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON veraguas_ticketing.* TO 'veraguas_ticketing'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON veraguas_payments.* TO 'veraguas_payments'@'127.0.0.1';
+
+FLUSH PRIVILEGES;
