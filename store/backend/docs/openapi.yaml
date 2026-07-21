@@ -1,0 +1,8 @@
+openapi: 3.0.3
+info: {title: Veraguas United Store API, version: 1.0.0}
+paths:
+  /api/v1/store/products: {get: {responses: {'200': {description: Catalog}}}}
+  /api/v1/store/products/{slug}: {get: {responses: {'200': {description: Product}}}}
+  /api/v1/store/cart/items: {post: {responses: {'200': {description: Cart}, '409': {description: Stock unavailable}}}}
+  /api/v1/store/checkout: {post: {parameters: [{name: Idempotency-Key, in: header, required: true, schema: {type: string}}], responses: {'201': {description: Order and payment intent}}}}
+  /api/v1/store/orders/{id}: {get: {responses: {'200': {description: Order}}}}

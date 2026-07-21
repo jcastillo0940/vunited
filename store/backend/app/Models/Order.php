@@ -1,0 +1,2 @@
+<?php
+namespace App\Models; use Illuminate\Database\Eloquent\Model; use Illuminate\Database\Eloquent\Attributes\Fillable; #[Fillable(['public_id','status','email','shipping','subtotal','total','currency','payment_public_id','correlation_id'])] class Order extends Model {protected function casts():array{return ['shipping'=>'array'];} public function items(){return $this->hasMany(OrderItem::class);}}
