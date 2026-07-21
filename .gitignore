@@ -21,6 +21,7 @@ dist/
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/phase8/
 /vendor
 Homestead.json
 Homestead.yaml
