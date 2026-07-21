@@ -1,0 +1,101 @@
+{
+    "phase":  10,
+    "started_at":  "2026-07-21T08:22:54.9135269Z",
+    "finished_at":  "2026-07-21T08:22:55.0223256Z",
+    "maintenance":  "not_started",
+    "checks":  [
+                   {
+                       "detail":  "RC-20260721",
+                       "status":  "PASS",
+                       "name":  "release candidate tag"
+                   },
+                   {
+                       "detail":  "Fase 9 report exists",
+                       "status":  "PASS",
+                       "name":  "certification report"
+                   },
+                   {
+                       "detail":  "SHA256 manifest exists",
+                       "status":  "PASS",
+                       "name":  "release checksum"
+                   },
+                   {
+                       "detail":  "web/backend",
+                       "status":  "PASS",
+                       "name":  "backend web"
+                   },
+                   {
+                       "detail":  "web/frontend",
+                       "status":  "PASS",
+                       "name":  "frontend web"
+                   },
+                   {
+                       "detail":  "store/backend",
+                       "status":  "PASS",
+                       "name":  "backend store"
+                   },
+                   {
+                       "detail":  "store/frontend",
+                       "status":  "PASS",
+                       "name":  "frontend store"
+                   },
+                   {
+                       "detail":  "ticketing/backend",
+                       "status":  "PASS",
+                       "name":  "backend ticketing"
+                   },
+                   {
+                       "detail":  "ticketing/frontend",
+                       "status":  "PASS",
+                       "name":  "frontend ticketing"
+                   },
+                   {
+                       "detail":  "payments/backend",
+                       "status":  "PASS",
+                       "name":  "backend payments"
+                   },
+                   {
+                       "detail":  "payments/frontend",
+                       "status":  "PASS",
+                       "name":  "frontend payments"
+                   },
+                   {
+                       "detail":  "Backup inventory exists; no production snapshot accessible",
+                       "status":  "PASS",
+                       "name":  "final backups available"
+                   },
+                   {
+                       "detail":  "MySQL veraguas_ticketing_test rejects configured access (Fase 9)",
+                       "status":  "BLOCKED",
+                       "name":  "ticketing regression"
+                   },
+                   {
+                       "detail":  "Requires provisioned VM, services and backup target",
+                       "status":  "BLOCKED",
+                       "name":  "load/restore/rollback"
+                   },
+                   {
+                       "detail":  "Activation is dry-run unless explicit infrastructure authority is supplied",
+                       "status":  "BLOCKED",
+                       "name":  "production activation authority"
+                   }
+               ],
+    "blockers":  [
+                     {
+                         "detail":  "MySQL veraguas_ticketing_test rejects configured access (Fase 9)",
+                         "name":  "ticketing regression"
+                     },
+                     {
+                         "detail":  "Requires provisioned VM, services and backup target",
+                         "name":  "load/restore/rollback"
+                     },
+                     {
+                         "detail":  "Activation is dry-run unless explicit infrastructure authority is supplied",
+                         "name":  "production activation authority"
+                     }
+                 ],
+    "decision":  "NO-GO",
+    "activation":  "not_executed",
+    "cleanup":  "not_executed",
+    "reason":  "No production VM/DNS/PHP-FPM/MySQL/Redis context is available in this workspace"
+}
