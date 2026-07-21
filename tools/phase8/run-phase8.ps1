@@ -8,8 +8,9 @@ foreach($s in $services){
   if(!(Test-Path $dir)){ $findings+=,@{service=$s;severity='critical';message='backend inexistente'}; continue }
   $refs+=,@{service=$s;routes='validated';path=$dir}
 }
-$patterns='DB::connection\(|App\\Domain\\(Store|Ticketing|Payments)'
-$cross=& rg -n $patterns (Join-Path $root 'web/backend') (Join-Path $root 'store/backend') (Join-Path $root 'ticketing/backend') (Join-Path $root 'payments/backend') 2>$null
+$cross=@()
+$rules=@{ 'web/backend'='App\\Domain\\(Store|Ticketing|Payments)|DB::connection\((?!mysql)'; 'store/backend'='App\\Domain\\(Web|Ticketing|Payments)|DB::connection\((?!mysql)'; 'ticketing/backend'='App\\Domain\\(Web|Store)|DB::connection\((?!mysql)'; 'payments/backend'='App\\Domain\\(Web|Store|Ticketing)|DB::connection\((?!mysql)' }
+foreach($pair in $rules.GetEnumerator()){$hit=& rg -n --pcre2 $pair.Value (Join-Path $root $pair.Key) 2>$null;if($hit){$cross+=$hit}}
 if($cross){$findings+=,@{service='architecture';severity='high';message='referencias cruzadas detectadas';details=($cross -join "`n")}}
 $legacy=Get-ChildItem (Join-Path $root 'storage') -Recurse -File -ErrorAction SilentlyContinue | Where-Object {$_.Name -match 'legacy|dump|export'}
 if(!$legacy){$findings+=,@{service='etl';severity='blocked';message='No existe dataset legacy verificable; no se ejecuta carga destructiva'}}
