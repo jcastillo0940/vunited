@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema;
+return new class extends Migration { public function up(): void { Schema::create('form_submissions',function(Blueprint $t){$t->id();$t->uuid('public_id')->unique();$t->string('form_type',40);$t->string('name')->nullable();$t->string('email')->nullable();$t->string('phone')->nullable();$t->text('message')->nullable();$t->json('payload')->nullable();$t->timestamp('consent_at')->nullable();$t->string('status',30)->default('new');$t->ipAddress('ip_address')->nullable();$t->text('user_agent')->nullable();$t->timestamps();$t->index(['form_type','status']);}); } public function down(): void { Schema::dropIfExists('form_submissions'); } };

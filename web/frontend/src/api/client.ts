@@ -35,6 +35,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
             'Content-Type': 'application/json',
             Accept: 'application/json',
             'X-Correlation-ID': correlationId,
+            ...(sessionStorage.getItem('web_admin_token') ? { Authorization: `Bearer ${sessionStorage.getItem('web_admin_token')}` } : {}),
         },
         body: options.body ? JSON.stringify(options.body) : undefined,
         signal: options.signal,
@@ -47,3 +48,6 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
     return (await response.json()) as T;
 }
+
+export function setAuthToken(token: string) { sessionStorage.setItem('web_admin_token', token); }
+export function clearAuthToken() { sessionStorage.removeItem('web_admin_token'); }
