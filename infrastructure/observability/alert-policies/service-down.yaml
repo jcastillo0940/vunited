@@ -1,0 +1,16 @@
+displayName: "Veraguas United - servicio critico caido (nginx/php-fpm/mysql/redis)"
+combiner: OR
+conditions:
+  - displayName: "Log de health-check.sh reporta FAIL para un servicio"
+    conditionMatchedLog:
+      filter: >
+        resource.type="gce_instance" AND
+        logName="projects/PROJECT_ID/logs/veraguas-health-check" AND
+        jsonPayload.status="FAIL"
+notificationChannels: []
+# Nota: requiere que infrastructure/scripts/health-check.sh escriba su
+# resultado como entrada de log estructurada (ver ese script) y que exista
+# un log-based metric asociado a logName "veraguas-health-check":
+#   gcloud logging metrics create veraguas_health_check_fail \
+#     --description="Fallos de health-check.sh" \
+#     --log-filter='resource.type="gce_instance" AND jsonPayload.status="FAIL"'

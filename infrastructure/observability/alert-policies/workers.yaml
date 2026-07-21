@@ -1,0 +1,15 @@
+displayName: "Veraguas United - worker en crash-loop"
+combiner: OR
+conditions:
+  - displayName: "Un veraguas-*-worker.service reinicia mas de 3 veces en 10 minutos"
+    conditionMatchedLog:
+      filter: >
+        resource.type="gce_instance" AND
+        jsonPayload._SYSTEMD_UNIT=~"veraguas-.*-worker\\.service" AND
+        textPayload=~"Restart|Failed"
+notificationChannels: []
+# Requiere que journald este siendo recolectado por Ops Agent (ya activo por
+# defecto via el receiver 'syslog' incluido en logging.service.pipelines.default_pipeline
+# de /etc/google-cloud-ops-agent/config.yaml) y roles/logging.logWriter
+# habilitado en la cuenta de servicio (ver docs/security/secrets-management.md
+# para el mismo tipo de bloqueo de permisos).

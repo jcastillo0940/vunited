@@ -1,0 +1,17 @@
+displayName: "Veraguas United - CPU sostenida alta"
+combiner: OR
+conditions:
+  - displayName: "CPU > 80% durante 10 minutos"
+    conditionThreshold:
+      filter: >
+        resource.type="gce_instance" AND
+        metric.type="agent.googleapis.com/cpu/utilization"
+      comparison: COMPARISON_GT
+      thresholdValue: 0.8
+      duration: 600s
+      aggregations:
+        - alignmentPeriod: 300s
+          perSeriesAligner: ALIGN_MEAN
+alertStrategy:
+  autoClose: 1800s
+notificationChannels: []
