@@ -1,0 +1,71 @@
+/* Base compartida — copiada de resources/css/app.css (frontend actual).
+   Cada frontend nuevo importa este archivo antes de sus propios estilos. */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght@100..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-background font-body text-text-main antialiased;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
+    }
+
+    /* Accesibilidad: foco visible consistente en toda la superficie nueva. */
+    :focus-visible {
+        outline: 2px solid theme('colors.accent');
+        outline-offset: 2px;
+        border-radius: theme('borderRadius.md');
+    }
+}
+
+@layer components {
+    .page-shell {
+        @apply mx-auto w-full max-w-shell px-margin-mobile md:px-margin-desktop;
+    }
+
+    .section-space {
+        @apply py-16 md:py-24;
+    }
+
+    .display-kicker {
+        @apply font-body text-[10px] font-bold uppercase tracking-athletic text-accent;
+    }
+
+    .section-heading {
+        @apply font-display text-3xl font-bold uppercase tracking-tight text-primary md:text-4xl;
+    }
+
+    .surface-card {
+        @apply rounded-lg border border-gray-200 bg-white shadow-card;
+    }
+
+    .surface-panel {
+        @apply rounded-xl border border-gray-200 bg-white shadow-panel;
+    }
+
+    /* Skip link: oculto hasta recibir foco por teclado. */
+    .skip-link {
+        @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-toast
+               focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm
+               focus:font-semibold focus:text-white;
+    }
+}
+
+@layer utilities {
+    .animate-scroll {
+        animation: scroll 40s linear infinite;
+    }
+}
