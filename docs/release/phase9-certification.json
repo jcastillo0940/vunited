@@ -1,0 +1,106 @@
+{
+    "phase":  9,
+    "release_candidate":  "RC-20260721",
+    "started_at":  "2026-07-21T08:17:28.6842186Z",
+    "finished_at":  "2026-07-21T08:20:48.0608865Z",
+    "regression":  [
+                       {
+                           "exit_code":  0,
+                           "name":  "root-regression"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "web-regression"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "store-regression"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "payments-regression"
+                       },
+                       {
+                           "exit_code":  1,
+                           "name":  "ticketing-regression"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "composer-audit-web/backend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "composer-audit-store/backend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "composer-audit-payments/backend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "composer-audit-ticketing/backend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "composer-audit-."
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "npm-production-audit"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "frontend-build-web/frontend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "frontend-build-store/frontend"
+                       },
+                       {
+                           "exit_code":  0,
+                           "name":  "frontend-build-ticketing/frontend"
+                       }
+                   ],
+    "security":  {
+                     "npm_production_audit":  "passed",
+                     "secret_scan":  "passed",
+                     "composer_audit":  "passed",
+                     "npm_dev_audit":  "5 vulnerabilities (development toolchain; breaking upgrade required)"
+                 },
+    "load":  {
+                 "status":  "not_executed",
+                 "concurrency":  [
+                                     100,
+                                     300,
+                                     1000
+                                 ],
+                 "reason":  "No VM services/endpoints available in certification shell",
+                 "targets":  [
+                                 "web",
+                                 "catalog",
+                                 "checkout",
+                                 "payments",
+                                 "ticketing",
+                                 "scanner",
+                                 "webhooks",
+                                 "workers"
+                             ]
+             },
+    "resilience":  {
+                       "restore":  "not_executed",
+                       "reason":  "Requires provisioned VM, databases and backup target",
+                       "rollback":  "not_executed"
+                   },
+    "go":  "NO-GO",
+    "critical":  [
+
+                 ],
+    "high":  [
+                 "ticketing-regression"
+             ],
+    "risks":  [
+                  "Ticketing test DB credentials/instance unavailable",
+                  "Load, restore and rollback require provisioned infrastructure",
+                  "npm dev vulnerabilities remain pending non-breaking upgrade"
+              ]
+}

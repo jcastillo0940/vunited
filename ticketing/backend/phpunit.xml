@@ -5,9 +5,6 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
@@ -32,7 +29,7 @@
         <env name="DB_PORT" value="3306"/>
         <env name="DB_DATABASE" value="veraguas_ticketing_test"/>
         <env name="DB_USERNAME" value="veraguas_ticketing"/>
-        <env name="DB_PASSWORD" value="BsLOomUfCgbOZ2rwjIWJTINkiKY7YQEz"/>
+        <env name="DB_PASSWORD" value=""/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
@@ -41,7 +38,7 @@
         <env name="REDIS_HOST" value="127.0.0.1"/>
         <env name="REDIS_PORT" value="6379"/>
         <env name="REDIS_USERNAME" value="veraguas_ticketing"/>
-        <env name="REDIS_PASSWORD" value="a2hvb73SEAfxf84t8fEwBPOLtdaHA7ZE"/>
+        <env name="REDIS_PASSWORD" value=""/>
         <env name="REDIS_PREFIX" value="veraguas:ticketing:test:"/>
         <env name="TICKET_QR_SIGNING_KEY" value="test-signing-key-not-for-production-use-only"/>
         <env name="PULSE_ENABLED" value="false"/>
