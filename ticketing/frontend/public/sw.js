@@ -3,7 +3,7 @@
 // validacion tienen que ser reales o quedar en la cola offline explicita
 // del propio Scanner.tsx, no un cache silencioso que podria mentir sobre
 // el estado real de un boleto).
-const CACHE_NAME = 'veraguas-ticketing-shell-v1';
+const CACHE_NAME = 'veraguas-ticketing-shell-v2';
 const SHELL_PATHS = ['/', '/escaner', '/escaner/login', '/manifest.json'];
 
 self.addEventListener('install', (event) => {

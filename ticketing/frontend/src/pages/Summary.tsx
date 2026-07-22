@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Card, FormField, Input, Button, ErrorState, LoadingState } from '@veraguas/ui';
 import { listZones, createOrder, type ZoneSummary } from '../api/ticketing';
 import { useOrderFlow } from '../context/OrderFlowContext';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { ApiError } from '../api/client';
 
 export function Summary() {
     const { eventId, zoneId, quantity, setOrderId } = useOrderFlow();
+    const { customer } = useCustomerAuth();
     const navigate = useNavigate();
     const [zone, setZone] = useState<ZoneSummary | null>(null);
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
+    const [name, setName] = useState(customer?.name ?? '');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +28,14 @@ export function Summary() {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
-        if (!eventId || !zoneId) return;
+        if (!eventId || !zoneId || !customer) return;
         setSubmitting(true);
         setError(null);
 
         try {
             const idempotencyKey = crypto.randomUUID();
             const res = await createOrder(eventId, {
-                customer_email: email,
+                customer_email: customer.email,
                 customer_name: name || undefined,
                 idempotency_key: idempotencyKey,
                 items: [{ zone_id: zoneId, quantity }],
@@ -73,8 +74,8 @@ export function Summary() {
 
             <form onSubmit={handleSubmit}>
                 <Card>
-                    <FormField htmlFor="email" label="Correo" required>
-                        <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <FormField htmlFor="email" label="Correo de tu cuenta">
+                        <Input id="email" type="email" disabled value={customer?.email ?? ''} />
                     </FormField>
                     <div className="mt-4">
                         <FormField htmlFor="name" label="Nombre completo">

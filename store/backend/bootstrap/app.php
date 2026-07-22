@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('api', [\App\Http\Middleware\AttachCorrelationId::class]);
+        $middleware->alias(['admin' => \App\Http\Middleware\RequireAdmin::class]);
+        // API-only app: no 'login' route exists. Sin esto, un guest en una ruta
+        // protegida sin header Accept: application/json revienta con
+        // "Route [login] not defined" en vez de un 401 limpio.
+        $middleware->redirectGuestsTo(fn () => null);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

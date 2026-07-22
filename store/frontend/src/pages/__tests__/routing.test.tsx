@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { RouteShell } from '../../layouts/RouteShell';
@@ -20,15 +20,39 @@ function renderAt(path: string) {
     );
 }
 
+beforeEach(() => {
+    vi.stubGlobal(
+        'fetch',
+        vi.fn(async (input: RequestInfo | URL) => {
+            const url = String(input);
+            if (url.includes('/products')) {
+                return new Response(JSON.stringify({ data: [] }), { status: 200 });
+            }
+            if (url.includes('/cart')) {
+                return new Response(
+                    JSON.stringify({ id: 1, token: 'test-token', currency: 'CRC', expires_at: '', items: [] }),
+                    { status: 200 },
+                );
+            }
+
+            return new Response('{}', { status: 200 });
+        }),
+    );
+});
+
+afterEach(() => {
+    vi.unstubAllGlobals();
+});
+
 describe('store routing', () => {
     it('renders the catalog at /', () => {
         renderAt('/');
         expect(screen.getByRole('heading', { name: 'Catálogo' })).toBeInTheDocument();
     });
 
-    it('shows the empty cart state at /carrito', () => {
+    it('shows the empty cart state at /carrito', async () => {
         renderAt('/carrito');
-        expect(screen.getByText('Tu carrito está vacío')).toBeInTheDocument();
+        expect(await screen.findByText('Tu carrito está vacío')).toBeInTheDocument();
     });
 
     it('renders NotFound for an unknown path', () => {

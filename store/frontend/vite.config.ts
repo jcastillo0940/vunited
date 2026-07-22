@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Build estatico servido por nginx desde /var/www/veraguas-store/builds/.
+// Build estatico servido por nginx en la raiz del dominio publico dedicado
+// (tienda.wp-pa.com) - el SPA vive en "/", no bajo un prefijo /builds/.
 export default defineConfig({
     plugins: [react()],
-    base: '/builds/',
+    base: '/',
     build: {
         outDir: 'dist',
         emptyOutDir: true,

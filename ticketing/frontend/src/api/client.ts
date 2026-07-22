@@ -2,6 +2,8 @@
 // dedicado 1:1, no via el gateway compartido api.veraguas.internal de Fase 2).
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+const CUSTOMER_TOKEN_KEY = 'veraguas-ticketing-customer-token';
+
 export class ApiError extends Error {
     status: number;
     correlationId: string;
@@ -27,12 +29,14 @@ export interface RequestOptions {
 /** Agrega X-Correlation-ID a cada solicitud y normaliza errores HTTP. */
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const correlationId = newCorrelationId();
+    const token = localStorage.getItem(CUSTOMER_TOKEN_KEY);
     const response = await fetch(`${BASE_URL}${path}`, {
         method: options.method ?? 'GET',
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
             'X-Correlation-ID': correlationId,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: options.body ? JSON.stringify(options.body) : undefined,
         signal: options.signal,

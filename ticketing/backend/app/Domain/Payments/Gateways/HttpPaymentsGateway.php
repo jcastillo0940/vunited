@@ -18,8 +18,12 @@ use Illuminate\Support\Facades\Log;
  */
 class HttpPaymentsGateway implements PaymentsGateway
 {
-    public function createIntent(Order $order): PaymentIntentResult
+    public function createIntent(Order $order, string $method = 'tilopay'): PaymentIntentResult
     {
+        if ($method === 'cash') {
+            return $this->createCashIntent($order);
+        }
+
         try {
             $response = Http::withToken(config('services.payments.internal_secret'))
                 ->timeout(5)
@@ -51,6 +55,54 @@ class HttpPaymentsGateway implements PaymentsGateway
             );
         } catch (\Throwable $e) {
             Log::error('payments.create_intent_exception', [
+                'order' => $order->public_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return new PaymentIntentResult(success: false, errorMessage: 'No se pudo contactar a Payments.');
+        }
+    }
+
+    /**
+     * Ruta de efectivo: llama al endpoint real de Payments (a diferencia del
+     * camino TiloPay de arriba, cuyo shape/ruta esta desalineado con la API
+     * real de Payments - eso queda sin tocar, ver docs de la fase de pagos).
+     */
+    private function createCashIntent(Order $order): PaymentIntentResult
+    {
+        try {
+            $response = Http::withHeaders([
+                'X-Service-Token' => config('services.payments.service_token'),
+                'X-Service-Audience' => 'ticketing',
+                'X-Service-Scopes' => 'payments.write',
+                'Idempotency-Key' => 'ticketing-order-'.$order->public_id,
+            ])
+                ->withoutVerifying() // vhost interno con certificado autofirmado (veraguas.internal)
+                ->timeout(5)
+                ->post(rtrim(config('services.payments.base_url'), '/').'/internal/v1/payment-intents', [
+                    'source' => 'ticketing',
+                    'external_reference' => $order->public_id,
+                    // Payments guarda amount como enteros (unidad menor, centavos);
+                    // Order.total en Ticketing es decimal:2, hay que convertir aqui.
+                    'amount' => (int) round(((float) $order->total) * 100),
+                    'currency' => $order->currency,
+                    'provider' => 'cash',
+                ]);
+
+            if (! $response->successful()) {
+                Log::warning('payments.create_cash_intent_failed', [
+                    'order' => $order->public_id,
+                    'status' => $response->status(),
+                ]);
+
+                return new PaymentIntentResult(success: false, errorMessage: 'Payments respondio '.$response->status());
+            }
+
+            $data = $response->json();
+
+            return new PaymentIntentResult(success: true, intentId: $data['id'] ?? null, redirectUrl: null);
+        } catch (\Throwable $e) {
+            Log::error('payments.create_cash_intent_exception', [
                 'order' => $order->public_id,
                 'error' => $e->getMessage(),
             ]);

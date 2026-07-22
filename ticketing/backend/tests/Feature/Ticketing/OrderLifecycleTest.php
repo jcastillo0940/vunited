@@ -10,6 +10,7 @@ use App\Domain\Ticketing\Models\Event;
 use App\Domain\Ticketing\Models\Zone;
 use App\Domain\Ticketing\Services\OrderService;
 use App\Domain\Ticketing\Support\OrderStateMachine;
+use App\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -23,6 +24,13 @@ class OrderLifecycleTest extends TestCase
         $this->app->instance(PaymentsGateway::class, $fake);
 
         return $fake;
+    }
+
+    private function makeCustomer(): Customer
+    {
+        return Customer::create([
+            'name' => 'Buyer', 'email' => 'buyer-'.uniqid().'@example.com', 'password' => bcrypt('secret1234'),
+        ]);
     }
 
     private function makeEventWithZone(int $capacity = 5): array
@@ -46,10 +54,11 @@ class OrderLifecycleTest extends TestCase
         $this->fakeGateway();
         [$event, $zone] = $this->makeEventWithZone();
         $service = app(OrderService::class);
+        $customer = $this->makeCustomer();
 
         $order = $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 2],
-        ], 'buyer@example.com', 'Buyer', null, null);
+        ], $customer->id, 'buyer@example.com', 'Buyer', null, null);
 
         $this->assertSame('hold_active', $order->status);
         $this->assertSame(2, (int) $order->holds()->sum('quantity'));
@@ -70,25 +79,27 @@ class OrderLifecycleTest extends TestCase
     {
         [$event, $zone] = $this->makeEventWithZone(capacity: 1);
         $service = app(OrderService::class);
+        $customer = $this->makeCustomer();
 
         $this->expectException(InsufficientCapacityException::class);
         $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 2],
-        ], 'buyer@example.com', null, null, null);
+        ], $customer->id, 'buyer@example.com', null, null, null);
     }
 
     public function test_idempotency_key_returns_same_order_without_reclaiming_capacity(): void
     {
         [$event, $zone] = $this->makeEventWithZone(capacity: 5);
         $service = app(OrderService::class);
+        $customer = $this->makeCustomer();
 
         $order1 = $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 2],
-        ], 'buyer@example.com', null, null, 'idem-key-1');
+        ], $customer->id, 'buyer@example.com', null, null, 'idem-key-1');
 
         $order2 = $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 2],
-        ], 'buyer@example.com', null, null, 'idem-key-1');
+        ], $customer->id, 'buyer@example.com', null, null, 'idem-key-1');
 
         $this->assertSame($order1->id, $order2->id);
         $zone->refresh();
@@ -101,10 +112,11 @@ class OrderLifecycleTest extends TestCase
         $fake->nextIntentSucceeds = false;
         [$event, $zone] = $this->makeEventWithZone(capacity: 5);
         $service = app(OrderService::class);
+        $customer = $this->makeCustomer();
 
         $order = $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 3],
-        ], 'buyer@example.com', null, null, null);
+        ], $customer->id, 'buyer@example.com', null, null, null);
 
         $this->expectException(OrderException::class);
 
@@ -121,10 +133,11 @@ class OrderLifecycleTest extends TestCase
     {
         [$event, $zone] = $this->makeEventWithZone(capacity: 5);
         $service = app(OrderService::class);
+        $customer = $this->makeCustomer();
 
         $order = $service->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 4],
-        ], 'buyer@example.com', null, null, null);
+        ], $customer->id, 'buyer@example.com', null, null, null);
 
         $service->cancel($order);
 

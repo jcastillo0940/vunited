@@ -2,6 +2,8 @@
 
 namespace App\Domain\Ticketing\Support;
 
+use App\Domain\Ticketing\Exceptions\OrderException;
+
 /**
  * Unica fuente de verdad de que transiciones de estado de orden son
  * validas. Ningun servicio debe hacer `$order->status = 'x'` directo -
@@ -32,7 +34,10 @@ class OrderStateMachine
     public static function assertTransitionAllowed(string $from, string $to): void
     {
         if (! self::canTransition($from, $to)) {
-            throw new \DomainException("Transicion de orden invalida: {$from} -> {$to}.");
+            // OrderException (no DomainException): los controllers atrapan
+            // OrderException para responder 409/422; una excepcion sin
+            // atrapar aqui se convertia en 500 en vez de un error de negocio.
+            throw new OrderException("Transicion de orden invalida: {$from} -> {$to}.");
         }
     }
 

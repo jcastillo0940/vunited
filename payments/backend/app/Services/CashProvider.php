@@ -1,0 +1,3 @@
+<?php
+namespace App\Services; use App\Contracts\PaymentProvider; use Illuminate\Support\Str;
+class CashProvider implements PaymentProvider { public function create(array $p):array{return ['provider'=>'cash','reference'=>'cash_'.Str::uuid(),'status'=>'pending','checkout_url'=>null];} public function query(string $reference):array{return ['reference'=>$reference,'status'=>'pending'];} public function refund(string $reference,int $amount,string $currency):array{return ['reference'=>$reference,'status'=>'refunded','amount'=>$amount,'currency'=>$currency];} public function verifyWebhook(string $payload,?string $signature):bool{return false;} }

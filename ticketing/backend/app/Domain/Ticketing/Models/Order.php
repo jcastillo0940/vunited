@@ -3,15 +3,17 @@
 namespace App\Domain\Ticketing\Models;
 
 use App\Domain\Ticketing\Support\HasPublicUlid;
+use App\Models\Customer;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-    'event_id', 'status', 'customer_email', 'customer_name', 'customer_phone',
+    'event_id', 'customer_id', 'status', 'customer_email', 'customer_name', 'customer_phone',
     'currency', 'subtotal', 'total', 'idempotency_key', 'hold_expires_at',
-    'paid_at', 'cancelled_at', 'refunded_at', 'payment_intent_id', 'metadata',
+    'paid_at', 'cancelled_at', 'refunded_at', 'payment_intent_id', 'payment_method',
+    'cash_confirmed_by', 'cash_confirmed_at', 'metadata',
 ])]
 class Order extends Model
 {
@@ -26,6 +28,7 @@ class Order extends Model
             'paid_at' => 'datetime',
             'cancelled_at' => 'datetime',
             'refunded_at' => 'datetime',
+            'cash_confirmed_at' => 'datetime',
             'metadata' => 'array',
         ];
     }
@@ -33,6 +36,11 @@ class Order extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function items(): HasMany

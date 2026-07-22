@@ -15,7 +15,7 @@ use App\Domain\Ticketing\Models\Order;
  */
 interface PaymentsGateway
 {
-    public function createIntent(Order $order): PaymentIntentResult;
+    public function createIntent(Order $order, string $method = 'tilopay'): PaymentIntentResult;
 
     public function refund(Order $order, ?string $reason = null): RefundResult;
 }

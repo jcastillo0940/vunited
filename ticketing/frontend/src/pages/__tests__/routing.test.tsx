@@ -3,23 +3,26 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { RouteShell } from '../../layouts/RouteShell';
 import { OrderFlowProvider } from '../../context/OrderFlowContext';
+import { CustomerAuthProvider } from '../../context/CustomerAuthContext';
 import { Events } from '../Events';
 import { Wallet } from '../Wallet';
 import { NotFound } from '../NotFound';
 
 function renderAt(path: string) {
     return render(
-        <OrderFlowProvider>
-            <MemoryRouter initialEntries={[path]}>
-                <Routes>
-                    <Route element={<RouteShell />}>
-                        <Route path="/" element={<Events />} />
-                        <Route path="/wallet" element={<Wallet />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Route>
-                </Routes>
-            </MemoryRouter>
-        </OrderFlowProvider>,
+        <CustomerAuthProvider>
+            <OrderFlowProvider>
+                <MemoryRouter initialEntries={[path]}>
+                    <Routes>
+                        <Route element={<RouteShell />}>
+                            <Route path="/" element={<Events />} />
+                            <Route path="/wallet" element={<Wallet />} />
+                            <Route path="*" element={<NotFound />} />
+                        </Route>
+                    </Routes>
+                </MemoryRouter>
+            </OrderFlowProvider>
+        </CustomerAuthProvider>,
     );
 }
 

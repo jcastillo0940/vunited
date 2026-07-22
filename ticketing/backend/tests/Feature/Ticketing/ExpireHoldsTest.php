@@ -7,6 +7,7 @@ use App\Domain\Payments\Gateways\FakePaymentsGateway;
 use App\Domain\Ticketing\Models\Event;
 use App\Domain\Ticketing\Models\Zone;
 use App\Domain\Ticketing\Services\OrderService;
+use App\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,9 +29,11 @@ class ExpireHoldsTest extends TestCase
             'capacity_available' => 3, 'capacity_held' => 0,
         ]);
 
+        $customer = Customer::create(['name' => 'Buyer', 'email' => 'buyer-'.uniqid().'@example.com', 'password' => bcrypt('secret1234')]);
+
         $order = app(OrderService::class)->createOrder($event, [
             ['zone_public_id' => $zone->public_id, 'quantity' => 3],
-        ], 'buyer@example.com', null, null, null, holdMinutes: -1); // ya vencido
+        ], $customer->id, 'buyer@example.com', null, null, null, holdMinutes: -1); // ya vencido
 
         $zone->refresh();
         $this->assertSame(0, $zone->capacity_available, 'El cupo debe quedar reservado al crear el hold.');

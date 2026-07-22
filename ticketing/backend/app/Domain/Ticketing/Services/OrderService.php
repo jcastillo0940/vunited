@@ -33,6 +33,7 @@ class OrderService
     public function createOrder(
         Event $event,
         array $items,
+        int $customerId,
         string $customerEmail,
         ?string $customerName,
         ?string $customerPhone,
@@ -54,9 +55,10 @@ class OrderService
             throw new OrderException('La orden debe tener al menos una linea.');
         }
 
-        return DB::transaction(function () use ($event, $items, $customerEmail, $customerName, $customerPhone, $idempotencyKey, $holdMinutes) {
+        return DB::transaction(function () use ($event, $items, $customerId, $customerEmail, $customerName, $customerPhone, $idempotencyKey, $holdMinutes) {
             $order = Order::create([
                 'event_id' => $event->id,
+                'customer_id' => $customerId,
                 'status' => 'draft',
                 'customer_email' => $customerEmail,
                 'customer_name' => $customerName,
@@ -174,11 +176,15 @@ class OrderService
      * failed y se liberan los holds (nunca se deja capacidad retenida
      * indefinidamente por un fallo externo).
      */
-    public function requestPayment(Order $order): Order
+    public function requestPayment(Order $order, string $method = 'tilopay'): Order
     {
         OrderStateMachine::assertTransitionAllowed($order->status, 'pending_payment');
 
-        $result = $this->payments->createIntent($order);
+        if ($method === 'cash') {
+            $this->extendHoldsForCash($order);
+        }
+
+        $result = $this->payments->createIntent($order, $method);
 
         if (! $result->success) {
             $this->releaseHolds($order);
@@ -191,10 +197,23 @@ class OrderService
         $order->update([
             'status' => 'pending_payment',
             'payment_intent_id' => $result->intentId,
+            'payment_method' => $method,
             'metadata' => array_merge($order->metadata ?? [], ['payment_redirect_url' => $result->redirectUrl]),
         ]);
 
         return $order->fresh();
+    }
+
+    /**
+     * Efectivo no se paga al instante: el cliente necesita tiempo para
+     * acercarse a pagar. Se extiende el hold normal (~10 min) a 24h en vez
+     * de dejarlo expirar mientras va a pagar.
+     */
+    private function extendHoldsForCash(Order $order): void
+    {
+        $newExpiry = now()->addHours(24);
+        $order->holds()->where('status', 'active')->update(['expires_at' => $newExpiry]);
+        $order->update(['hold_expires_at' => $newExpiry]);
     }
 
     /**

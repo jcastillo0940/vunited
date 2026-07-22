@@ -19,6 +19,7 @@ function newCorrelationId(): string {
 export interface RequestOptions {
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     body?: unknown;
+    headers?: Record<string, string>;
     signal?: AbortSignal;
 }
 
@@ -31,6 +32,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
             'Content-Type': 'application/json',
             Accept: 'application/json',
             'X-Correlation-ID': correlationId,
+            ...options.headers,
         },
         body: options.body ? JSON.stringify(options.body) : undefined,
         signal: options.signal,

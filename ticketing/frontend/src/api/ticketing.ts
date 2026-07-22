@@ -37,6 +37,12 @@ export interface OrderItemView {
     line_total: number;
 }
 
+export interface OrderEventSummary {
+    id: string;
+    label: string;
+    starts_at: string | null;
+}
+
 export interface OrderView {
     id: string;
     order_number: string;
@@ -45,7 +51,10 @@ export interface OrderView {
     subtotal: number;
     total: number;
     hold_expires_at: string | null;
+    payment_method: string | null;
     payment_redirect_url: string | null;
+    created_at?: string;
+    event?: OrderEventSummary | null;
     items?: OrderItemView[];
 }
 
@@ -78,8 +87,8 @@ export function getOrder(orderId: string): Promise<{ data: OrderView }> {
     return apiFetch(`/orders/${orderId}`);
 }
 
-export function requestPayment(orderId: string): Promise<{ data: OrderView }> {
-    return apiFetch(`/orders/${orderId}/payment`, { method: 'POST' });
+export function requestPayment(orderId: string, paymentMethod: 'tilopay' | 'cash' = 'tilopay'): Promise<{ data: OrderView }> {
+    return apiFetch(`/orders/${orderId}/payment`, { method: 'POST', body: { payment_method: paymentMethod } });
 }
 
 export function googleWalletLink(ticketId: string): Promise<{ save_url: string }> {
@@ -101,4 +110,12 @@ export function getOrderTickets(orderId: string): Promise<{ data: TicketView[] }
 
 export function getTicket(ticketId: string): Promise<{ data: TicketView }> {
     return apiFetch(`/tickets/${ticketId}`);
+}
+
+export function getMyOrders(): Promise<{ data: OrderView[] }> {
+    return apiFetch('/customers/orders');
+}
+
+export function getMyTickets(): Promise<{ data: TicketView[] }> {
+    return apiFetch('/customers/tickets');
 }

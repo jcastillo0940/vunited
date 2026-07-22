@@ -27,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(GoogleWalletService::class, fn () => new GoogleWalletService(
             config('services.google_wallet.issuer_id'),
             config('services.google_wallet.service_account_json'),
+            config('services.google_wallet.issuer_name'),
+            config('services.google_wallet.logo_url'),
+            config('services.google_wallet.hero_image_url'),
+            config('services.google_wallet.hex_background_color'),
+            config('services.google_wallet.review_status'),
         ));
 
         $this->app->singleton(AppleWalletService::class, fn () => new AppleWalletService(

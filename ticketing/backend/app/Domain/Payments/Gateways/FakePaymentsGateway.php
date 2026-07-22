@@ -17,7 +17,7 @@ class FakePaymentsGateway implements PaymentsGateway
 
     public bool $nextRefundSucceeds = true;
 
-    public function createIntent(Order $order): PaymentIntentResult
+    public function createIntent(Order $order, string $method = 'tilopay'): PaymentIntentResult
     {
         if (! $this->nextIntentSucceeds) {
             return new PaymentIntentResult(success: false, errorMessage: 'Fake: intent rechazado.');
@@ -26,7 +26,7 @@ class FakePaymentsGateway implements PaymentsGateway
         return new PaymentIntentResult(
             success: true,
             intentId: 'fake-intent-'.$order->public_id,
-            redirectUrl: 'https://pay.example.test/fake/'.$order->public_id,
+            redirectUrl: $method === 'cash' ? null : 'https://pay.example.test/fake/'.$order->public_id,
         );
     }
 

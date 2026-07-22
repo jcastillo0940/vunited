@@ -1,21 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Grid, Card, Badge, EmptyState, LoadingState } from '@veraguas/ui';
-import { getOrderTickets, type TicketView } from '../api/ticketing';
-import { useOrderFlow } from '../context/OrderFlowContext';
+import { getMyTickets, type TicketView } from '../api/ticketing';
 
 export function Wallet() {
-    const { orderId } = useOrderFlow();
     const [tickets, setTickets] = useState<TicketView[] | null>(null);
 
     useEffect(() => {
-        if (!orderId) {
-            setTickets([]);
-
-            return;
-        }
-        getOrderTickets(orderId).then((res) => setTickets(res.data));
-    }, [orderId]);
+        getMyTickets().then((res) => setTickets(res.data));
+    }, []);
 
     if (tickets === null) return <LoadingState label="Cargando tus entradas…" />;
 

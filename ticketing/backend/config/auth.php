@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Customer;
 use App\Models\Operator;
 
 return [
@@ -42,6 +43,15 @@ return [
             'driver' => 'sanctum',
             'provider' => 'operators',
         ],
+        // Guard separado para clientes (mismo driver sanctum, provider
+        // distinto): cada instancia de Laravel\Sanctum\Guard valida el
+        // tokenable contra SU PROPIO provider (ver Guard::hasValidProvider),
+        // asi que un token de Customer nunca pasaria por el guard 'sanctum'
+        // (provider operators). Las rutas de cliente usan auth:sanctum_customers.
+        'sanctum_customers' => [
+            'driver' => 'sanctum',
+            'provider' => 'customers',
+        ],
     ],
 
     /*
@@ -65,6 +75,10 @@ return [
         'operators' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', Operator::class),
+        ],
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => Customer::class,
         ],
     ],
 

@@ -21,14 +21,16 @@ export function Checkout() {
         getOrder(orderId).then((res) => setOrder(res.data));
     }, [orderId, navigate]);
 
-    async function handlePay() {
+    async function handlePay(method: 'tilopay' | 'cash') {
         if (!orderId) return;
         setSubmitting(true);
         setError(null);
         try {
-            const res = await requestPayment(orderId);
+            const res = await requestPayment(orderId, method);
             if (res.data.payment_redirect_url) {
                 window.location.href = res.data.payment_redirect_url;
+            } else if (res.data.payment_method === 'cash') {
+                navigate('/pago/efectivo-pendiente', { state: { order: res.data } });
             } else {
                 navigate('/confirmacion');
             }
@@ -55,8 +57,24 @@ export function Checkout() {
                     </Alert>
                 ) : null}
                 {error ? <ErrorState message={error} /> : null}
-                <Button size="lg" pending={submitting} pendingLabel="Redirigiendo a pago…" onClick={handlePay} className="w-full">
+                <Button
+                    size="lg"
+                    pending={submitting}
+                    pendingLabel="Redirigiendo a pago…"
+                    onClick={() => handlePay('tilopay')}
+                    className="w-full"
+                >
                     Pagar con TiloPay
+                </Button>
+                <Button
+                    size="lg"
+                    variant="secondary"
+                    pending={submitting}
+                    pendingLabel="Procesando…"
+                    onClick={() => handlePay('cash')}
+                    className="w-full"
+                >
+                    Pagar en efectivo
                 </Button>
             </Card>
         </Container>

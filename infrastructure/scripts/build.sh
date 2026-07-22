@@ -21,6 +21,12 @@ if [[ -f composer.json ]]; then
 fi
 
 if [[ -f package.json ]]; then
+    # Los usuarios de servicio no tienen $HOME (ProtectHome=yes en el unit
+    # systemd), y npm por defecto escribe su cache en $HOME/.npm. Sin esto
+    # npm falla con EACCES al no poder crear /home/veraguas-<servicio>.
+    export npm_config_cache="$(service_base "$SERVICE")/tmp/.npm-cache"
+    mkdir -p "$npm_config_cache"
+
     info "npm ci"
     npm ci --no-audit --no-fund
     info "npm run build"

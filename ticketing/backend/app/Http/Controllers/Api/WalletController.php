@@ -7,6 +7,7 @@ use App\Domain\Wallets\Exceptions\WalletNotConfiguredException;
 use App\Domain\Wallets\Services\AppleWalletService;
 use App\Domain\Wallets\Services\GoogleWalletService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WalletController
 {
@@ -15,11 +16,15 @@ class WalletController
         private readonly AppleWalletService $apple,
     ) {}
 
-    public function google(string $publicId): JsonResponse
+    public function google(Request $request, string $publicId): JsonResponse
     {
-        $ticket = Ticket::query()->where('public_id', $publicId)->first();
+        $ticket = Ticket::query()->where('public_id', $publicId)->with('order')->first();
         if (! $ticket) {
             return response()->json(['message' => 'Boleto no encontrado.'], 404);
+        }
+
+        if ($ticket->order->customer_id !== $request->user()->id) {
+            return response()->json(['message' => 'Este boleto no te pertenece.'], 403);
         }
 
         try {
@@ -29,11 +34,15 @@ class WalletController
         }
     }
 
-    public function apple(string $publicId): JsonResponse
+    public function apple(Request $request, string $publicId): JsonResponse
     {
-        $ticket = Ticket::query()->where('public_id', $publicId)->first();
+        $ticket = Ticket::query()->where('public_id', $publicId)->with('order')->first();
         if (! $ticket) {
             return response()->json(['message' => 'Boleto no encontrado.'], 404);
+        }
+
+        if ($ticket->order->customer_id !== $request->user()->id) {
+            return response()->json(['message' => 'Este boleto no te pertenece.'], 403);
         }
 
         try {

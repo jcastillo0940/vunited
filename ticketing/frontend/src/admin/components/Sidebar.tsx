@@ -8,6 +8,7 @@ const ITEMS = [
     { to: '/admin/operadores', label: 'Operadores', icon: 'group' },
     { to: '/admin/dispositivos', label: 'Dispositivos', icon: 'smartphone' },
     { to: '/admin/validaciones', label: 'Validaciones', icon: 'history' },
+    { to: '/admin/pagos-efectivo', label: 'Pagos en efectivo', icon: 'payments' },
 ];
 
 export function Sidebar() {

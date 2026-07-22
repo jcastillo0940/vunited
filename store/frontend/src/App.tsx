@@ -11,6 +11,8 @@ import { PaymentError } from './pages/PaymentError';
 import { PaymentPending } from './pages/PaymentPending';
 import { NotFound } from './pages/NotFound';
 import { ErrorBoundary } from './ErrorBoundary';
+import { Login as AdminLogin } from './admin/pages/Login';
+import { CashPayments as AdminCashPayments } from './admin/pages/CashPayments';
 
 export function App() {
     return (
@@ -29,6 +31,9 @@ export function App() {
                         <Route path="/pago/pendiente" element={<PaymentPending />} />
                         <Route path="*" element={<NotFound />} />
                     </Route>
+
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin/pagos-efectivo" element={<AdminCashPayments />} />
                 </Routes>
             </BrowserRouter>
         </ErrorBoundary>
